@@ -1,0 +1,19 @@
+{
+  "checks_exit_codes": {
+    "uv run alembic check": 0,
+    "uv run alembic upgrade head": 0,
+    "uv run basedpyright": 0,
+    "uv run pytest -q": 0,
+    "uv run pytest scripts -q": 0,
+    "uv run python scripts/mutate_probe.py": 0,
+    "uv run python scripts/orchestrate_pipeline.py --check-blast-radius": 0,
+    "uv run ruff check .": 0,
+    "uv run ruff format --check .": 0
+  },
+  "code_tree_sha256": "915c6d8f605aa7a5ac103e060bfb36263a15b6e118d353a26225151093829ecf",
+  "consensus_proof_sha256": "83f4fb6b3ed78858a4a6b8af71172c73bcd11b622169bfd55a1fb523131d9ebf",
+  "generated_at": "2026-11-05T10:52:06.887133+00:00",
+  "ledger_sha256": "b755b2afd7ae3c1f6c8d715cab34ea21ede4aa53acc1af3245920afc97f2ec4a",
+  "task_id": "LINK-42",
+  "verdict": "ACCEPT"
+}

@@ -1,0 +1,186 @@
+from typing import Annotated
+
+from fastapi import APIRouter, Header, HTTPException, Query, status
+from fastapi.responses import RedirectResponse
+
+from app.api.billing import (
+    BillingDep,
+    apply_link_quota_guard,
+    release_link_quota_guard,
+)
+from app.api.deps import ServiceDep, to_response
+from app.schemas.link import (
+    TAG_PATTERN,
+    LinkBulkCreateRequest,
+    LinkBulkCreateResponse,
+    LinkCreate,
+    LinkResponse,
+    LinkStats,
+)
+from app.services.link import (
+    LinkExpiredError,
+    LinkInactiveError,
+    LinkNotFoundError,
+    ShortCodeConflictError,
+)
+
+router = APIRouter(prefix="/links", tags=["links"])
+
+
+@router.post(
+    "",
+    response_model=LinkResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Создать короткую ссылку",
+)
+async def create_link(
+    data: LinkCreate,
+    service: ServiceDep,
+    billing: BillingDep,
+    user_id: Annotated[int | None, Header(alias="X-User-Id")] = None,
+) -> LinkResponse:
+    """Создаёт новую короткую ссылку с опциональным кастомным кодом и TTL.
+
+    Header `X-User-Id` (опционально): при передаче проверяется квота активных
+    ссылок плана FREE (REQ-BILL-09, HTTP 403); при None — анонимная ссылка,
+    квота не проверяется (учебный контур).
+    """
+    await apply_link_quota_guard(billing, user_id)
+    try:
+        link = await service.create_link(data)
+    except ShortCodeConflictError as err:
+        await release_link_quota_guard(billing, user_id)
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(err)) from err
+    except Exception:
+        await release_link_quota_guard(billing, user_id)
+        raise
+    return to_response(link)
+
+
+@router.get("", response_model=list[LinkResponse], summary="Список ссылок")
+async def list_links(
+    service: ServiceDep,
+    tag: Annotated[
+        str | None,
+        Query(pattern=TAG_PATTERN, description="Фильтр по тегу (LINK-43)"),
+    ] = None,
+) -> list[LinkResponse]:
+    """Последние ссылки: новые первыми; при `tag` — только содержащие тег."""
+    return [to_response(item) for item in await service.list_links(tag=tag)]
+
+
+@router.post(
+    "/bulk",
+    response_model=LinkBulkCreateResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Массовое создание ссылок",
+)
+async def bulk_create_links(
+    request: LinkBulkCreateRequest,
+    service: ServiceDep,
+    billing: BillingDep,
+    user_id: Annotated[int | None, Header(alias="X-User-Id")] = None,
+) -> LinkBulkCreateResponse:
+    """Пакетное создание списка ссылок в единой транзакции."""
+    reserved = 0
+    try:
+        for _ in request.items:
+            await apply_link_quota_guard(billing, user_id)
+            if user_id is not None:
+                reserved += 1
+        return await service.bulk_create_links(request.items)
+    except ShortCodeConflictError as err:
+        for _ in range(reserved):
+            await release_link_quota_guard(billing, user_id)
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(err)) from err
+    except Exception:
+        for _ in range(reserved):
+            await release_link_quota_guard(billing, user_id)
+        raise
+
+
+@router.get(
+    "/{short_code}",
+    response_class=RedirectResponse,
+    status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+    summary="Перейти по короткой ссылке",
+)
+async def redirect_to_url(short_code: str, service: ServiceDep) -> RedirectResponse:
+    """Разрешает короткий код и выполняет перенаправление на исходный URL."""
+    try:
+        url = await service.resolve_link(short_code)
+    except LinkNotFoundError as err:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(err)) from err
+    except (LinkInactiveError, LinkExpiredError) as err:
+        raise HTTPException(status_code=status.HTTP_410_GONE, detail=str(err)) from err
+    return RedirectResponse(url=url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+@router.get(
+    "/{short_code}/stats",
+    response_model=LinkStats,
+    summary="Получить аналитику по ссылке",
+)
+async def get_link_stats(short_code: str, service: ServiceDep) -> LinkStats:
+    """Возвращает счетчик переходов и текущий статус ссылки."""
+    try:
+        return await service.get_stats(short_code)
+    except LinkNotFoundError as err:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(err)) from err
+
+
+@router.post(
+    "/{short_code}/disable",
+    response_model=LinkResponse,
+    summary="Деактивировать ссылку",
+)
+async def disable_link(
+    short_code: str,
+    service: ServiceDep,
+    billing: BillingDep,
+    user_id: Annotated[int | None, Header(alias="X-User-Id")] = None,
+) -> LinkResponse:
+    """Выключает ссылку, запрещая дальнейшие переходы.
+
+    Header `X-User-Id` (опционально): при передаче активная ссылка снимается
+    с учёта квоты плана FREE (`release_link`).
+    """
+    try:
+        existing = await service.get_link(short_code)
+        was_active = existing.is_active
+        link = await service.disable_link(short_code)
+    except LinkNotFoundError as err:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(err)) from err
+    if was_active:
+        await release_link_quota_guard(billing, user_id)
+    return to_response(link)
+
+
+@router.post(
+    "/{short_code}/enable",
+    response_model=LinkResponse,
+    summary="Включить ссылку",
+)
+async def enable_link(
+    short_code: str,
+    service: ServiceDep,
+    billing: BillingDep,
+    user_id: Annotated[int | None, Header(alias="X-User-Id")] = None,
+) -> LinkResponse:
+    """Активирует ранее выключенную ссылку."""
+    quota_reserved = False
+    try:
+        existing = await service.get_link(short_code)
+        if not existing.is_active:
+            await apply_link_quota_guard(billing, user_id)
+            quota_reserved = user_id is not None
+        link = await service.enable_link(short_code)
+    except LinkNotFoundError as err:
+        if quota_reserved:
+            await release_link_quota_guard(billing, user_id)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(err)) from err
+    except Exception:
+        if quota_reserved:
+            await release_link_quota_guard(billing, user_id)
+        raise
+    return to_response(link)
