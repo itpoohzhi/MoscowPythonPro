@@ -1,0 +1,23 @@
+{
+  "max_changed_files": 7,
+  "max_added_lines": 400,
+  "max_deleted_lines": 150,
+  "frozen_paths": [
+    "app/core/config.py",
+    "app/core/security.py",
+    "app/main.py"
+  ],
+  "allowed_new_directories": [
+    "app/schemas",
+    "app/services",
+    "app/api",
+    "docs/domains",
+    "tests/unit",
+    "tests/integration"
+  ],
+  "allowed_new_core_files": [
+    "app/core/protocols.py",
+    "alembic/versions/004_add_link_tags.py"
+  ],
+  "_architect_note": "Разрешение архитектора (2026-10-29): для фичи фильтрации ссылок по тегам (LINK-43) допускается новый файл миграции alembic/versions/004_add_link_tags.py в отдельной волне 1."
+}
