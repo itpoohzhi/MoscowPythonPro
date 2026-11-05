@@ -3282,7 +3282,7 @@ uv run python scripts/validate_handoff.py; echo "exit=$?"
 ```bash
 cd ~/work/MoscowPythonPro/workshop-nov-5
 uv run python scripts/validate_handoff.py .ai-team/handoff-coder.md
-uv run python scripts/validate_handoff.py .ai-team/panel
+uv run python scripts/validate_handoff.py .ai-team/panel; echo "exit=$?"
 ```
 
 Покажем, как валидатор отбраковывает «отписку» с пропущенными разделами:
