@@ -2,7 +2,7 @@
 
 [![MoscowPython](./assets/moscowpython-logo.png)](./assets/moscowpython-logo.svg)
 
-Каталог `workshop-nov-5/` на ветке `workshop-nov-5` и на тегах `snap-0` … `snap-6` — монолит `linksvc`
+Каталог `workshop/` на ветке `workshop` и на тегах `snap-0` … `snap-6` — монолит `linksvc`
 воркшопа MoscowPythonPro (проект сообщества MoscowPython) «От вайб-кодинга к профессиональной AI-разработке».
 
 **Приложение едино для трёх дней и доступно с первого дня** (монолит links + analytics + billing).
@@ -51,7 +51,7 @@
 Команды выполняйте через `uv run`: верификаторы вызывают `python3` и `pytest` из окружения проекта.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5   # на ветке workshop-nov-5 или на теге snap-N
+cd ~/work/MoscowPythonPro/workshop   # на ветке workshop или на теге snap-N
 uv sync
 uv run ruff check .
 uv run pytest -q
@@ -74,9 +74,9 @@ uv run python tools/verify_techlead_gate.py
 
 ## Контрольные срезы `snap-0` … `snap-6`
 
-Теги лежат на истории ветки `workshop-nov-5`. Перейти к срезу: `git checkout snap-3`
+Теги лежат на истории ветки `workshop`. Перейти к срезу: `git checkout snap-3`
 или `./tools/restore_checkpoint.sh snap-3`.
-Вернуться: `git checkout workshop-nov-5`. На каждом срезе проходят `uv run pytest -q` и те верификаторы,
+Вернуться: `git checkout workshop`. На каждом срезе проходят `uv run pytest -q` и те верификаторы,
 которые уже есть на этом срезе.
 
 Приложение во всех срезах одно и то же; растёт набор скилов и обвязки.

@@ -1,7 +1,7 @@
-# AGENTS.md — Нерушимые правила базового проекта воркшопа (~/work/MoscowPythonPro/workshop-nov-5)
+# AGENTS.md — Нерушимые правила базового проекта воркшопа (~/work/MoscowPythonPro/workshop)
 
 ## 1. Контекст и навигация
-- Рабочий каталог сервиса: `~/work/MoscowPythonPro/workshop-nov-5` (репозиторий `https://github.com/itpoohzhi/MoscowPythonPro`).
+- Рабочий каталог сервиса: `~/work/MoscowPythonPro/workshop` (репозиторий `https://github.com/itpoohzhi/MoscowPythonPro`).
 - Стек: Python 3.12+, FastAPI, SQLAlchemy 2.0 (async), PostgreSQL 17, Alembic, Pydantic v2, pytest, ruff, basedpyright.
 - Перед началом любой задачи проверь архитектуру и слои проекта в `app/` и проверь наличие подходящего процедурного скила в `.agents/skills/`.
 

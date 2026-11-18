@@ -35,7 +35,7 @@ if [[ $FORCE -eq 1 ]]; then
 else
   git checkout "$SNAPSHOT"
 fi
-cd "$(git rev-parse --show-toplevel)/workshop-nov-5"
+cd "$(git rev-parse --show-toplevel)/workshop"
 
 case $SNAPSHOT in
   "snap-0")
@@ -69,4 +69,4 @@ case $SNAPSHOT in
 esac
 
 echo "✅ Срез $SNAPSHOT успешно применен!"
-echo "💡 Для возврата на вершину ветки воркшопа выполните: git checkout workshop-nov-5"
+echo "💡 Для возврата на вершину ветки воркшопа выполните: git checkout workshop"

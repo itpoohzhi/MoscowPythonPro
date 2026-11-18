@@ -10,7 +10,7 @@ for file in $CHANGED; do
     if [ -n "$PREFIX" ]; then
         file=${file#"$PREFIX"}
     else
-        file=${file#"workshop-nov-5/"}
+        file=${file#"workshop/"}
     fi
     for frozen in "${FROZEN_FILES[@]}"; do
         if [ "$file" == "$frozen" ]; then

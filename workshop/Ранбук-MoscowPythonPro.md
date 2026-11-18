@@ -1,8 +1,8 @@
 ![MoscowPython](./assets/moscowpython-logo.png)
 
-# Ранбук воркшопа MoscowPythonPro (5 ноября 2026): От вайб-кодинга к профессиональной AI-разработке
+# Ранбук воркшопа MoscowPythonPro (2026): От вайб-кодинга к профессиональной AI-разработке
 
-> **Версия комплекта:** ветка `workshop-nov-5` | коммит `34094ca4545844144ab7ea17a4d85895061b8471` (`snap-6`) | срезы `snap-0`..`snap-6`
+> **Версия комплекта:** ветка `workshop` | коммит `34094ca4545844144ab7ea17a4d85895061b8471` (`snap-6`) | срезы `snap-0`..`snap-6`
 
 > 📦 Этот файл участник забирает с собой: в нём полностью собраны база трёх учебных дней и итоговый сквозной практикум.
 
@@ -51,7 +51,7 @@
 ### Сквозной учебный репозиторий и стек
 
 Практика Дня 1 разворачивается на реальном микросервисе сокращения и аналитики ссылок:
-- **Рабочий каталог участника:** `~/work/MoscowPythonPro/workshop-nov-5`
+- **Рабочий каталог участника:** `~/work/MoscowPythonPro/workshop`
 - **Git-репозиторий:** `https://github.com/itpoohzhi/MoscowPythonPro.git`
 - **Технологический стек:** Python 3.12+, FastAPI, PostgreSQL 17, SQLAlchemy 2.0 (async), Alembic, Pydantic v2, `uv`, `ruff`, `basedpyright`, `pytest`, `pytest-cov`.
 
@@ -607,7 +607,7 @@ flowchart LR
         Web["Frontend / Web UI"]
         Highload["Highload-контур — 100 смежных<br/>микросервисов"]
     end
-    subgraph FastAPI["Базовый проект воркшопа (~/work/MoscowPythonPro/workshop-nov-5)"]
+    subgraph FastAPI["Базовый проект воркшопа (~/work/MoscowPythonPro/workshop)"]
         direction LR
         API["app/api/v1/<br/>(контроллеры HTTP)"]
         SVC["app/services/<br/>(бизнес-правила)"]
@@ -671,7 +671,7 @@ flowchart LR
 #### Шаг 1. Зафиксировать чистую точку старта
 Перед запуском агента убедитесь, что рабочее дерево Git чисто:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git status
 ```
 Вывод должен содержать `nothing to commit, working tree clean`.
@@ -679,14 +679,14 @@ git status
 #### Шаг 2. Запустить разведку через OpenCode
 Передайте агенту строгий промпт на проведение разведки без права изменения кода приложения:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/architecture/SKILL.md исследуй кодовую базу и сформируй architecture-map.md." < /dev/null
 ```
 
 #### Шаг 3. Проверить результат фактом
 После завершения работы агента выполните детерминированную проверку:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git status --porcelain
 ```
 **Критерий успеха (Definition of Done):**
@@ -825,7 +825,7 @@ flowchart LR
 
 Файл `.agents/AGENTS.md` является законом проекта, нарушать который агенту строго запрещено. Он содержит 6 обязательных секций:
 
-1. **Контекст и навигация:** Указывает рабочий каталог (`~/work/MoscowPythonPro/workshop-nov-5`), стек технологий и предписывает обязательную проверку процедурных скилов перед началом работы.
+1. **Контекст и навигация:** Указывает рабочий каталог (`~/work/MoscowPythonPro/workshop`), стек технологий и предписывает обязательную проверку процедурных скилов перед началом работы.
 2. **Нерушимые правила архитектуры и границ слоёв:**
    - Эндпоинты (`app/api/`) отвечают только за приём запроса и схемы; запрещено импортировать SQLAlchemy и делать прямые SQL-запросы.
    - Сервисный слой (`app/services/`) изолирован от HTTP: запрещено выбрасывать `HTTPException` или принимать объекты `Request/Response`.
@@ -912,7 +912,7 @@ flowchart LR
 #### Проверка ворот качества в терминале:
 Выполните поочерёдный запуск инструментов для валидации чистого состояния:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run ruff check .
 uv run basedpyright
 uv run pytest
@@ -1297,13 +1297,13 @@ flowchart LR
 
 Выполните вызов агента с коротким промптом, активирующим скил:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/characterization-tests/SKILL.md напиши тесты." < /dev/null
 ```
 
 #### Проверка результата в терминале:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest tests/characterization/ -v
 git status --porcelain
 ```
@@ -1412,13 +1412,13 @@ flowchart LR
 ### 6.4. Практика: запуск генерации модульных тестов через OpenCode
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/tests-unit/SKILL.md напиши модульные тесты сервиса в tests/unit/test_service.py." < /dev/null
 ```
 
 #### Проверка результата в терминале:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest tests/unit/ --cov=app.services.link --cov-branch --cov-report=term-missing
 ```
 **Критерий успеха:** 100% Branch Coverage, вывод `TOTAL ... 100%`, отсутствие пропущенных строк и веток.
@@ -1530,13 +1530,13 @@ flowchart LR
 ### 7.4. Практика: запуск интеграционных тестов через OpenCode
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/tests-integration/SKILL.md напиши интеграционные тесты эндпоинтов в tests/integration/test_api.py." < /dev/null
 ```
 
 #### Проверка результата в терминале:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest tests/integration/ -v
 uv run pytest tests/integration/ -v
 ```
@@ -1627,7 +1627,7 @@ flowchart LR
 3. **Обязательная ручная проверка и доработка:** Агент обязан проверить сгенерированный файл и написать полноценный метод `downgrade()`, удаляющий созданную таблицу и связанные индексы.
 4. **Тест на обратимость (Reversibility Drill):** Агент обязан выполнить цикл применения и отката:
    ```bash
-   cd ~/work/MoscowPythonPro/workshop-nov-5
+   cd ~/work/MoscowPythonPro/workshop
    uv run alembic upgrade head
    uv run alembic downgrade -1
    uv run alembic upgrade head
@@ -1653,19 +1653,19 @@ flowchart LR
 
 #### Шаг 1. Запуск генерации миграции под скилом `data-engineering`
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/data-engineering/SKILL.md создай модель ClickEvent в app/models/analytics.py и обратимую миграцию Alembic." < /dev/null
 ```
 
 #### Шаг 2. Запуск реализации бизнес-логики под скилом `feature`
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/feature/SKILL.md реализуй модуль аналитики кликов и подключи подсчёт при редиректе. Тесты добавляй в tests/unit/test_service.py." < /dev/null
 ```
 
 #### Шаг 3. Детерминированная валидация в терминале
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run ruff check .
 uv run basedpyright
 uv run pytest
@@ -1777,13 +1777,13 @@ flowchart LR
 ### 9.4. Практика: запуск безопасного рефакторинга и проверка мутацией
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/refactoring/SKILL.md оптимизируй подсчёт статистики в app/repositories/analytics.py и проверь силу тестов мутацией." < /dev/null
 ```
 
 #### Проверка устойчивости контура в терминале:
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest
 ```
 **Критерий успеха:** Сервис оптимизирован, тесты подтвердили 100% надежность и чувствительность к ошибкам.
@@ -1810,7 +1810,7 @@ uv run pytest
 
 Чтобы окончательно устранить сомнения в необходимости инженерного контура, мы проводим доказательный живой эксперимент прямо на сквозном микросервисе `linksvc`:
 - **Бизнес-задача:** Команде аналитики и внешним интеграторам нужен эндпоинт выгрузки всех ссылок системы в формате JSON.
-- **Условия эксперимента:** Одна и та же языковая модель, одна и та же кодовая база `workshop-nov-5/`.
+- **Условия эксперимента:** Одна и та же языковая модель, одна и та же кодовая база `workshop/`.
 - **Режим 1 (Вайб-кодинг без скилов):** Мы временно отключаем каталог `.agents/skills` с помощью утилиты `tools/toggle_skills.py` и отправляем агенту задачу свободной прозой «как в веб-чате».
 - **Режим 2 (Инженерный харнес со скилами):** Мы возвращаем скилы на место через `tools/toggle_skills.py` и ставим задачу по скилу `fastapi-feature` под защитой ворот качества и TDD.
 
@@ -1825,7 +1825,7 @@ uv run pytest
 Переходим в рабочую папку сервиса и деактивируем скилы:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/toggle_skills.py --disable
 ```
 
@@ -1849,7 +1849,7 @@ python3 tools/toggle_skills.py --status
 Отправляем агенту типичную задачу «как в окне веб-чата»:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Реализуй эндпоинт экспорта всех ссылок сервиса в файл app/api/v1/endpoints/export_vibe.py и подключи его в app/api/v1/router.py. Напиши тест tests/integration/test_export_vibe.py." < /dev/null
 ```
 
@@ -1866,7 +1866,7 @@ opencode run --auto "Реализуй эндпоинт экспорта всех
 Возвращаем библиотеку скилов на место:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/toggle_skills.py --enable
 ```
 
@@ -1889,7 +1889,7 @@ python3 tools/toggle_skills.py --status
 Формулируем ту же бизнес-задачу декларативно, активируя скил `fastapi-feature`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "По скилу .agents/skills/fastapi-feature/SKILL.md реализуй эндпоинт экспорта в app/api/v1/endpoints/export_pro.py и интеграционный тест." < /dev/null
 ```
 
@@ -1910,7 +1910,7 @@ opencode run --auto "По скилу .agents/skills/fastapi-feature/SKILL.md р�
 Запускаем агента в роли независимого ревьювера для объективного сопоставления двух реализаций:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Сравни app/api/v1/endpoints/export_vibe.py и export_pro.py. Зафиксируй различия и риски в docs/reviews/export_comparison.md." < /dev/null
 ```
 
@@ -2056,7 +2056,7 @@ flowchart LR
 
 ### 11.1. Чек-лист приёмки артефактов Дня 1
 
-Перед завершением первого дня убедитесь, что в вашем рабочем репозитории `~/work/MoscowPythonPro/workshop-nov-5` присутствуют и верифицированы все 12 ключевых артефактов:
+Перед завершением первого дня убедитесь, что в вашем рабочем репозитории `~/work/MoscowPythonPro/workshop` присутствуют и верифицированы все 12 ключевых артефактов:
 
 - [ ] **1. Карта архитектуры (`architecture-map.md`):** Описаны 5 слоёв сервиса, направление вызовов и внешние контракты.
 - [ ] **2. Конституция репозитория (`.agents/AGENTS.md`):** Зафиксированы 6 обязательных разделов и запреты на читерство.
@@ -2117,7 +2117,7 @@ flowchart LR
 
 > **Сквозной интенсив школы MoscowPythonPro: Профессиональная агентная разработка на Python**  
 > **Версия стенда:** Python 3.12+ / FastAPI / SQLAlchemy 2.0 (Async: sqlalchemy[asyncio] + aiosqlite + greenlet) / SQLite / pytest / ruff / basedpyright  
-> **Рабочий каталог:** `~/work/MoscowPythonPro/workshop-nov-5`  
+> **Рабочий каталог:** `~/work/MoscowPythonPro/workshop`  
 > **Нерушимое правило ранбука:** Zero Hidden Scripts — все файлы, спецификации, промпты, конфигурации и команды создаются открыто из текста ранбука. Синтетические скрипты-заглушки запрещены: только реальные промпты агентов, реальный код сервиса и нативные handoff-карточки.
 
 ---
@@ -2172,17 +2172,17 @@ flowchart LR
 
 ### 0.2. Быстрый старт Дня 2: переключение ветки
 
-Перед началом работы подгружаем полное состояние Дня 2 одной командой из `ПРЕРЕКВИЗИТЫ.md`. Она скачивает с сервера ветку `workshop-nov-5` и переключает каталог `workshop-nov-5/` на проект Дня 2 целиком: приложение, все скилы прошлого и текущего дня и оркестрацию, а не только дельту. Ваши `.env` и `.venv` она сохраняет.
+Перед началом работы подгружаем полное состояние Дня 2 одной командой из `ПРЕРЕКВИЗИТЫ.md`. Она скачивает с сервера ветку `workshop` и переключает каталог `workshop/` на проект Дня 2 целиком: приложение, все скилы прошлого и текущего дня и оркестрацию, а не только дельту. Ваши `.env` и `.venv` она сохраняет.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
-git fetch origin && git checkout -f workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
+git fetch origin && git checkout -f workshop
 ```
 
 Затем проверьте стенд:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 test -f .env || cp .env.example .env
 git branch --show-current
 uv sync --python 3.14
@@ -2191,10 +2191,10 @@ uv run pytest
 ```
 
 **Критерий успешности стартовой проверки:**
-1. `git branch --show-current` выводит `workshop-nov-5`.
+1. `git branch --show-current` выводит `workshop`.
 2. `ls .agents/skills` показывает скилы оркестрации Дня 2: `teamlead-gate` (Оркестратор; алиасы `teamlead`, `techlead`, `techlead-gate` — те же скилы под другими именами), `teamlead-panel` (Панель техлидов), `feature` (Кодер, Цикл 1), `rework` (Кодер, Циклы 2–5), а также скилы Дня 1 и общие: `small-fix`, `tests-unit`, `tests-integration`, `refactoring`, `architecture` и др.
 3. `uv run pytest -ra` завершается итоговой строкой вида `179 passed, 1 warning`. Контрактные тесты скриптов оркестрации лежат в `scripts/` и запускаются отдельно (`uv run pytest scripts -q`), поэтому число `179 passed` остаётся тем же.
-4. Ваш `workshop-nov-5/.env` сохранён, а папки оркестрации `.ai-team/`, `prompts/`, `specs/`, `scripts/` лежат в `workshop-nov-5/`.
+4. Ваш `workshop/.env` сохранён, а папки оркестрации `.ai-team/`, `prompts/`, `specs/`, `scripts/` лежат в `workshop/`.
 
 ---
 
@@ -2350,7 +2350,7 @@ async def disable_link_blind(code: str):
 Сохраним фрагмент в файл проекта и отдадим его судье Панели техлидов (шляпа Скептика) без истории чата автора. Судья получает только код и спеку.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p handoff
 cat > handoff/blind-spot.py <<'EOF_BLIND_SPOT'
 async def disable_link_blind(code: str):
@@ -2366,7 +2366,7 @@ cat handoff/blind-spot.py
 🤖 **Промпт для живого показа** (запуск одной командой):
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Ты судья Панели техлидов в шляпе Скептика, сессия свежая, истории чата автора ты не видел. Прочитай handoff/blind-spot.py и specs/LINK-42-enable-link.md. Найди дефекты конкурентности и нарушения контрактов спеки. Файлы не меняй. Для каждого дефекта выведи: строка, суть, чем это грозит в проде, минимальное исправление." < /dev/null
 ```
 
@@ -2600,13 +2600,13 @@ flowchart TB
 
 ### 2.9. Практическое создание эталонной спецификации `specs/LINK-42-enable-link.md`
 
-Перейдём в репозиторий `~/work/MoscowPythonPro/workshop-nov-5` и создадим спецификацию для задачи `LINK-42`.
+Перейдём в репозиторий `~/work/MoscowPythonPro/workshop` и создадим спецификацию для задачи `LINK-42`.
 Задача заключается в реализации безопасного механизма временного отключения и включения коротких ссылок.
 
 Выполним команду в терминале:
 
 `````bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p specs
 cat > specs/LINK-42-enable-link.md <<'EOF_SPEC_LINK_42'
 # Спецификация задачи LINK-42: Управление активностью коротких ссылок
@@ -2713,7 +2713,7 @@ ls -lh specs/LINK-42-enable-link.md
 
 #### Практика: скилы Дня 2 и живая проверка спеки
 
-В ветке `workshop-nov-5` рядом со скилами Дня 1 лежат скилы оркестрации: `teamlead-gate` (Оркестратор), `teamlead-panel` (Панель техлидов), `feature` и `rework` (Кодер). Сравним самый «лёгкий» скил `small-fix` с полной оркестрацией `teamlead-gate`: они закрывают разные размеры задач.
+В ветке `workshop` рядом со скилами Дня 1 лежат скилы оркестрации: `teamlead-gate` (Оркестратор), `teamlead-panel` (Панель техлидов), `feature` и `rework` (Кодер). Сравним самый «лёгкий» скил `small-fix` с полной оркестрацией `teamlead-gate`: они закрывают разные размеры задач.
 
 | | `small-fix` | `teamlead-gate` |
 |---|---|---|
@@ -2724,7 +2724,7 @@ ls -lh specs/LINK-42-enable-link.md
 | **Выход** | Патч и отчёт: команды, коды выхода, что не смотрели | `.ai-team/verdict.md`, `.ai-team/consensus-proof.json`, реестр находок, handoff Кодера |
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat .agents/skills/small-fix/SKILL.md
 cat .agents/skills/teamlead-gate/SKILL.md
 ```
@@ -2732,14 +2732,14 @@ cat .agents/skills/teamlead-gate/SKILL.md
 🤖 **Живой промпт 1: точечная правка через `small-fix`.** Мелочь вроде текста ошибки не требует оркестрации с Панелью:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "По скилу .agents/skills/small-fix/SKILL.md сделай: убедись, что при отключении или включении несуществующей ссылки сервис возвращает 404 с detail ровно Link not found (пункт 6 раздела 2 спеки specs/LINK-42-enable-link.md). Если текст другой, исправь. Затронуть не более двух файлов. В конце выведи отчёт по пункту 5 скила." < /dev/null
 ```
 
 🤖 **Живой промпт 2: проверка самой спеки.** Свежая сессия читает спеку глазами судьи Панели (шляпа Реалиста) и не меняет файлы:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Ты судья Панели техлидов в шляпе Реалиста, сессия свежая, и проверяешь саму спецификацию. Прочитай specs/LINK-42-enable-link.md и проверь: 1) есть ли все 7 разделов; 2) перечислены ли разрешённые и запрещённые файлы; 3) указан ли код ответа при ошибке для каждого эндпоинта; 4) есть ли у каждого пункта Definition of Done команда с кодом выхода. Файлы не меняй. Выведи таблицу: пункт, ОК или дефект, цитата из спеки." < /dev/null
 ```
 
@@ -2876,7 +2876,7 @@ flowchart TB
 5. **Игнорирование миграций (иллюзия `create_all()`).** Поле `disabled` в `app/models.py` меняет только ORM-класс, а `Base.metadata.create_all()` не выполняет `ALTER TABLE` для существующих таблиц. Тесты на чистой базе в памяти зелёные, а на реальной файловой базе первый же запрос падает с `sqlite3.OperationalError: no such column: links.disabled`. Спека обязана требовать миграцию Alembic и проверку отсутствия дрейфа схемы (подробная настройка Alembic разобрана в Дне 1):
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run alembic upgrade head && uv run alembic check
 ```
 
@@ -3062,7 +3062,7 @@ flowchart LR
 Каждый судья на каждом раунде — отдельный запуск `opencode run` со свежим контекстом и закрытым stdin:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run -m "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" --format json "Ты judge-1 (шляпа Скептик), раунд R1. Проверь пакет по 5 критериям docs/gate-rubric.md. Файлы не меняй, ответ выведи в stdout." < /dev/null
 ```
 
@@ -3233,10 +3233,10 @@ flowchart LR
 
 ### 4.5. Подготовка инфраструктуры handoff в репозитории
 
-Перейдём в репозиторий `~/work/MoscowPythonPro/workshop-nov-5` и настроим инфраструктуру handoff:
+Перейдём в репозиторий `~/work/MoscowPythonPro/workshop` и настроим инфраструктуру handoff:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p .ai-team docs
 ls -la .ai-team
 ```
@@ -3244,7 +3244,7 @@ ls -la .ai-team
 Создадим регламент рубрики приёмки `docs/gate-rubric.md`, который станет единым мерилом качества для всех участников конвейера (по этим же пяти пунктам работает каждый судья Панели):
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat > docs/gate-rubric.md <<'EOF_RUBRIC'
 # Рубрика Gate: вердикт по пакету доказательств
 
@@ -3274,7 +3274,7 @@ cat docs/gate-rubric.md
 Кодер формирует пакет сам, в конце своей работы по скиллу `feature` (в Циклах 2..5 — по скиллу `rework`), и только из фактов на диске. Для CI на стенде лежит валидатор `scripts/validate_handoff.py`. Запущенный без аргументов, он проверяет эталонный пакет Дня 2: `.ai-team/handoff-coder.md`, структуру панели `.ai-team/panel/`, а также `handoff/coder-01.json` и `handoff/panel-rework-brief.json`, если они существуют.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat .ai-team/handoff-coder.md
 uv run python scripts/validate_handoff.py; echo "exit=$?"
 ```
@@ -3282,7 +3282,7 @@ uv run python scripts/validate_handoff.py; echo "exit=$?"
 Ожидаемый вывод: строка, начинающаяся с `УСПЕХ:`, затем `GATE: PASS` и `exit=0`. Теперь проверим отдельные пакеты по пути: Markdown Кодера и журнал панели:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/validate_handoff.py .ai-team/handoff-coder.md
 uv run python scripts/validate_handoff.py .ai-team/panel; echo "exit=$?"
 ```
@@ -3290,7 +3290,7 @@ uv run python scripts/validate_handoff.py .ai-team/panel; echo "exit=$?"
 Покажем, как валидатор отбраковывает «отписку» с пропущенными разделами:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p handoff
 echo '{"task_id": "LINK-42", "author_role": "coder", "decisions": ["сделал"]}' > handoff/broken.json
 uv run python scripts/validate_handoff.py handoff/broken.json; echo "exit=$?"
@@ -3671,7 +3671,7 @@ POSITION F-001: AGREE | ARG: «строка 45 вызывает logger.info бе
 На D3 открытых находок уже нет, но раунд обязателен: файлы D3 содержат обе секции с пометкой «вопросов не было» / «вопросов нет», а скрытого раунда D4 не существует. Затем Оркестратор запускает:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/generate_proof.py ledger
 uv run python scripts/generate_proof.py freeze
 ```
@@ -3718,7 +3718,7 @@ FALLBACK_CONSENT: YES
 6. **Acceptance:** выполнить команду `acceptance` из каждой задачи и записать код выхода в `ac_results`.
 7. **Личный прогон:**
    ```bash
-   cd ~/work/MoscowPythonPro/workshop-nov-5
+   cd ~/work/MoscowPythonPro/workshop
    uv run ruff check app tests
    uv run basedpyright
    uv run pytest tests/ -v
@@ -3844,7 +3844,7 @@ flowchart LR
 Создадим формализованный риск-план для задачи `LINK-42` в каталоге `docs/`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p docs
 cat > docs/risk-plan-LINK-42.md <<'EOF_RISK_PLAN'
 # Риск-план задачи LINK-42: Управление активностью коротких ссылок
@@ -3875,7 +3875,7 @@ cat docs/risk-plan-LINK-42.md
 Артефакт составляет агент в режиме подготовки TDD-контура. Он читает спеку и пишет риск-план в `docs/`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Ты разработчик, работающий по TDD: запись разрешена только в docs и tests. Прочитай specs/LINK-42-enable-link.md. Составь docs/risk-plan-LINK-42.md: таблица рисков R-1 ... R-5 (ID, сценарий отказа, вероятность и влияние, имя будущего теста, критерий закрытия) и графа Что сознательно не проверялось. Код в app не трогай, тесты пока не пиши." < /dev/null
 cat docs/risk-plan-LINK-42.md
 ```
@@ -3895,7 +3895,7 @@ cat docs/risk-plan-LINK-42.md
 Создадим полный приёмочный тестовый набор в `tests/test_link_toggle.py`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat > tests/test_link_toggle.py <<'EOF_TEST_TOGGLE'
 import os
 import pytest
@@ -4024,7 +4024,7 @@ uv run pytest tests/test_link_toggle.py -v
 Тесты пишутся по спеке и риск-плану до написания кода реализации. Живой промпт по скилу `tests-unit`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Используй скил tests-unit. Запись разрешена только в docs и tests. Прочитай specs/LINK-42-enable-link.md и docs/risk-plan-LINK-42.md. Напиши tests/test_link_toggle.py: по одному тесту на каждый риск R-1 ... R-5, реальный TestClient, без моков. Тесты строй по контрактам спеки, а не по коду в app. Запусти uv run pytest tests/test_link_toggle.py -q и объясни, почему тесты красные или зелёные. Код в app не меняй." < /dev/null
 ```
 
@@ -4045,7 +4045,7 @@ opencode run "Используй скил tests-unit. Запись разреш�
 Пока фича не реализована (фаза Red), эксперименты остаются мысленной моделью. После реализации в Главе 9 откат любого искажения возвращает тесты в зелёный статус.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest tests/test_link_toggle.py -q
 ```
 
@@ -4100,7 +4100,7 @@ flowchart TB
 ⚠️ **Когда запускать.** Перед мутациями скрипт прогоняет исходные тесты и останавливается с кодом `1`, если они красные. Сейчас, на фазе Red (§6.3), фича ещё не реализована и `tests/test_link_toggle.py` падает, поэтому боевой запуск `mutate_probe.py` и QA-промпт ниже вы выполните **после Green-проверки в §9.3**, когда Кодер реализует фичу и тесты станут зелёными. Пока достаточно прочитать, что скрипт делает и что должен напечатать.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/mutate_probe.py
 ```
 
@@ -4109,7 +4109,7 @@ uv run python scripts/mutate_probe.py
 🤖 **Живой промпт для мутационного аудита (запускайте после Green-проверки в §9.3):**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Запусти uv run python scripts/mutate_probe.py и дождись конца. Запиши в docs/mutation-report-LINK-42.md по каждому мутанту: название, убит или выжил. Для каждого выжившего мутанта предложи недостающий тест, но код в app не меняй." < /dev/null
 ```
 
@@ -4246,7 +4246,7 @@ verdict: null
 Файл `.ai-team/verdict.md` записывает **не человек и не модель**, а скрипт `generate_proof.py`: после проверки всего пакета он пишет детерминированный вердикт без временных меток. Эталонный проход по LINK-42 уже лежит в репозитории (`.ai-team/panel/`), поэтому приёмку можно воспроизвести одной командой:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/generate_proof.py
 head -n 8 .ai-team/verdict.md
 ```
@@ -4319,7 +4319,7 @@ flowchart TB
 - `scripts/orchestrate_pipeline.py` — быстрая проверка всего конвейера на диске без запуска моделей:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/orchestrate_pipeline.py
 ```
 
@@ -4516,7 +4516,7 @@ flowchart LR
 Перейдём в репозиторий и создадим ветку задачи:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git checkout -B feature/LINK-42-enable-link
 mkdir -p handoff
 ls prompts
@@ -4529,7 +4529,7 @@ git status --short
 Для живого прохода уберите эталонные ответы судей и вердикт (в `.ai-team/` они лежат как образец). Файлы `.ai-team/panel/manifest.json` и `.ai-team/code-gate.json` оставьте: скрипт CODE_GATE требует, чтобы они были на месте, и сам перезапишет их на шагах §9.4 и §9.6. Эталон остаётся в истории git, вернуть его можно командой `git checkout -- .ai-team`. Если вы идёте быстрым режимом из §9.6, этот шаг пропустите.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 rm -rf .ai-team/panel/r1 .ai-team/panel/d1 .ai-team/panel/d2 .ai-team/panel/d3 .ai-team/panel/c1
 rm -f .ai-team/panel/freeze.json .ai-team/panel/findings-ledger.tsv .ai-team/panel/findings-ledger.md
 rm -f .ai-team/verdict.md .ai-team/consensus-proof.json
@@ -4550,7 +4550,7 @@ ls -a .ai-team .ai-team/panel
 Посмотрим промпт Кодера: его правила Blast Radius и алгоритм работы (спека, миграция, команды верификации, запись `.ai-team/handoff-coder.md`) лежат в репозитории:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat prompts/01-coder.md
 ```
 
@@ -4559,7 +4559,7 @@ cat prompts/01-coder.md
 **Вариант А (CLI через OpenCode, основной):** отдельный свежий процесс с закрытым stdin. Бриф состоит из ссылки на скил и промпта роли:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run -m "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" "По скилу .agents/skills/feature/SKILL.md сделай задачу LINK-42, Цикл 1. Спека: specs/LINK-42-enable-link.md. Риск-план: docs/risk-plan-LINK-42.md.
 
 $(cat prompts/01-coder.md)" < /dev/null
@@ -4574,7 +4574,7 @@ $(cat prompts/01-coder.md)" < /dev/null
 Убедимся, что Кодер реализовал код и сформировал пакет передачи (`handoff/coder-01.json` и текстовая проекция `.ai-team/handoff-coder.md`):
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git status --short
 cat .ai-team/handoff-coder.md
 uv run python scripts/validate_handoff.py handoff/coder-01.json .ai-team/handoff-coder.md
@@ -4587,7 +4587,7 @@ uv run pytest -ra
 Когда `uv run pytest -ra` завершился с кодом 0 (Green), вернитесь к §6.6 и запустите мутационный аудит на реализованной фиче:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/mutate_probe.py
 ```
 
@@ -4602,7 +4602,7 @@ uv run python scripts/mutate_probe.py
 Перед Панелью Оркестратор независимо от Кодера прогоняет механические гейты. Красный CODE_GATE не идёт на суд: он возвращает работу Кодеру и расходует цикл, а Панель не тратит свои вызовы на то, что ловит линтер.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git diff --stat
 uv run ruff check app tests
 uv run basedpyright
@@ -4621,7 +4621,7 @@ uv run python scripts/mutate_probe.py
 Свидетельство CODE_GATE записывает скрипт: те же команды, их коды выхода и хеши входов (спека, риск-план, handoff Кодера) попадают в `.ai-team/code-gate.json`. Ручной прогон выше нужен, чтобы вы видели, что именно проверяется; сам скрипт выполняет эти команды заново (временную БД для миграций он создаёт сам).
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/orchestrate_pipeline.py --run-gates
 cat .ai-team/code-gate.json
 ```
@@ -4644,7 +4644,7 @@ cat .ai-team/code-gate.json
 Ниже порядок после REJECT (если ваш проход закончился ACCEPT, раздел пропустите; файлы Панели появляются в §9.6). Сначала запускаем функцию `panel-rework-summarizer`: один свежий read-only процесс, нужный вход ей подставляет Оркестратор:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 PASS_ID=$(python3 -c "import json; print(json.load(open('.ai-team/panel/manifest.json'))['pass_id'])")
 LEDGER_SHA=$(shasum -a 256 .ai-team/panel/findings-ledger.tsv | cut -d' ' -f1)
 opencode run --format json -m opencode-go/glm-5.3-flash "Ты функция panel-rework-summarizer. Процедура: раздел 'Функция panel-rework-summarizer' в .agents/skills/teamlead-panel/SKILL.md, схема: .agents/skills/teamlead-panel/references/panel-rework-brief-schema.md. STRICT READ-ONLY. Входы: ledger .ai-team/panel/findings-ledger.tsv; r1, d1, d2, d3, c1 — каталоги .ai-team/panel/r1 … .ai-team/panel/c1; freeze .ai-team/panel/freeze.json; diff — вывод git diff main...HEAD -- app tests alembic. Задача LINK-42. Цикл для Кодера: 2. pass_id: $PASS_ID. ledger_hash: $LEDGER_SHA. Выведи в stdout только один JSON-объект, без пояснений." < /dev/null > handoff/summarizer-events.jsonl
@@ -4657,7 +4657,7 @@ uv run python scripts/validate_handoff.py handoff/panel-rework-brief.json
 Затем запускаем Кодера в режиме `rework` (Цикл 2):
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --format json -m opencode-go/glm-5.3-flash "По скилу .agents/skills/rework/SKILL.md сделай задачу LINK-42, Цикл 2. Вход: handoff/panel-rework-brief.json. Спека: specs/LINK-42-enable-link.md. Риск-план: docs/risk-plan-LINK-42.md." < /dev/null
 uv run python scripts/validate_handoff.py handoff/coder-02.json .ai-team/handoff-coder.md
 ```
@@ -4665,7 +4665,7 @@ uv run python scripts/validate_handoff.py handoff/coder-02.json .ai-team/handoff
 После этого Оркестратор повторяет §9.4 (CODE_GATE) и открывает новый проход Панели с новым номером цикла. Старый проход откладываем в сторону, чтобы файлы разных проходов не смешались:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 mkdir -p handoff/panel-cycle-1
 cp -R .ai-team/panel/. handoff/panel-cycle-1/
 cp .ai-team/verdict.md .ai-team/consensus-proof.json handoff/panel-cycle-1/
@@ -4734,7 +4734,7 @@ flowchart LR
 Оркестратор фиксирует паспорт прохода: модель, номер цикла и хеши пяти входов (спека, риск-план, рубрика, handoff Кодера, свидетельство CODE_GATE).
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 scripts/generate_proof.py manifest --cycle 1 --model "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" --pass-id link42-c1
 shasum -a 256 .ai-team/panel/manifest.json
 ```
@@ -4746,9 +4746,9 @@ shasum -a 256 .ai-team/panel/manifest.json
 Чтобы не набирать три команды вручную, создадим небольшой раннер в рабочей папке `handoff/` (она вне git). Он запускает трёх судей одного раунда параллельно, каждого свежим процессом, и сохраняет текст ответа в `.ai-team/panel/<раунд>/judge-N.md`. Содержимое протокола в раннер не копируется: бриф ссылается на скил.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat > handoff/run_round.sh <<'EOF_RUN_ROUND'
-cd ~/work/MoscowPythonPro/workshop-nov-5 || exit 2
+cd ~/work/MoscowPythonPro/workshop || exit 2
 # Три судьи одного раунда, параллельно. Запуск: bash handoff/run_round.sh <r1|d1|d2|d3|c1> [номер места для retry]
 set -u
 ROUND="${1:?раунд: r1, d1, d2, d3 или c1}"
@@ -4807,7 +4807,7 @@ EOF_RUN_ROUND
 #### R1: независимая оценка
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 bash handoff/run_round.sh r1
 python3 scripts/generate_proof.py ledger
 cat .ai-team/panel/findings-ledger.md
@@ -4822,7 +4822,7 @@ cat .ai-team/panel/findings-ledger.md
 В каждом раунде дебатов судья видит реестр и все три ответа прошлого раунда, надевает новую шляпу и по каждой открытой находке занимает позицию: `AGREE`, `DISPUTE`, `AMEND` (уточнить тяжесть; только автору находки), `WITHDRAW` (снять; смысл только у автора) или `INCONCLUSIVE`. К каждой позиции обязательно одно из `evidence:`, `ARG:` (цитата чужого аргумента) или `NEW:` (новый проверяемый факт). **Менять свою позицию можно только с `ARG:` или `NEW:`**: так судью нельзя «продавить» нажимом, только доводом. В D1 и D2 судьи могут задать коллегам вопросы, ответы приходят в следующем раунде; в D3 вопросов нет, четвёртого раунда не будет.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 bash handoff/run_round.sh d1
 python3 scripts/generate_proof.py ledger
 bash handoff/run_round.sh d2
@@ -4839,7 +4839,7 @@ cat .ai-team/panel/findings-ledger.md
 После D3 Оркестратор замораживает реестр и кандидата (`ACCEPT` или `REJECT`). Кандидат `ACCEPT` возможен, только если нет ни одной находки `BLOCKER`/`IMPORTANT` со статусом `OPEN` или `AGREED`. Скрипт пишет `.ai-team/panel/freeze.json` и печатает его sha256 — digest, который судьи подписывают в финале.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 scripts/generate_proof.py freeze
 bash handoff/run_round.sh c1
 ```
@@ -4849,7 +4849,7 @@ bash handoff/run_round.sh c1
 #### Итоговая проверка: вердикт считает скрипт
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/generate_proof.py
 echo "код выхода: $?"
 head -n 3 .ai-team/verdict.md
@@ -4880,7 +4880,7 @@ head -n 3 .ai-team/verdict.md
 Если провайдер недоступен или нужен быстрый результат, используйте эталонный пакет `.ai-team/` из репозитория (его файлы помечены `reference-fixture`; для этого режима шаг «убрать эталон» из §9.2 пропускают). Быстрый режим ничего не запускает у модели, а детерминированно проверяет готовые файлы:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/orchestrate_pipeline.py
 ```
 
@@ -4889,7 +4889,7 @@ uv run python scripts/orchestrate_pipeline.py
 Автоматический внешний цикл (до 5 циклов: Кодер, CODE_GATE, три судьи на раунд, помощники `ledger`/`freeze`, проверка, при REJECT суммаризация и `rework`) запускается флагом `--live`. Сначала посмотрите, какие команды `opencode run` он выполнит, ничего не запуская:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run python scripts/orchestrate_pipeline.py --live --dry-run
 uv run python scripts/orchestrate_pipeline.py --live
 ```
@@ -4903,7 +4903,7 @@ uv run python scripts/orchestrate_pipeline.py --live
 Посмотрим на итоговый дифф ветки `feature/LINK-42-enable-link` относительно `main`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 git diff main...HEAD --stat
 ```
 
@@ -4918,7 +4918,7 @@ git diff main...HEAD --stat
 Канон сдачи тяжёлым путём требует проверить работу сервиса не только юнит-тестами, но и реальными HTTP-запросами к живому приложению:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 DATABASE_URL="sqlite+aiosqlite:///./test_links.db" uv run python3 -c "
 import sqlite3
 from fastapi.testclient import TestClient
@@ -4984,7 +4984,7 @@ print('✓ Персистентность подтверждена: колонк
 Выполним финальный приёмочный тест сервиса через прямой запуск Python-скрипта с реальным ASGI-транспортом:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 DATABASE_URL="sqlite+aiosqlite:///./test_links.db" uv run python3 <<'EOF_SMOKE_TEST'
 import os
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./test_links.db"
@@ -5041,7 +5041,7 @@ EOF_SMOKE_TEST
 Кульминация цикла: запуск приёмки **декларативно через промпт**, без самописных скриптов-заглушек. Мы вызываем OpenCode со скилом `teamlead-gate` (его алиасы: `teamlead`, `techlead`, `techlead-gate`), и агент сам берёт роль Оркестратора:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run -m "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" "Работай по скилу оркестрирования .agents/skills/teamlead-gate/SKILL.md, проведи приёмку задачи LINK-42 по 5 критериям качества." < /dev/null
 ```
 
@@ -5292,7 +5292,7 @@ FINDING A1: BLOCKER | app/main.py:27 | detail=str(e) пробрасывает к
 Выполним финальный прогон всех команд верификации в репозитории:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 pwd
 git status --short
 uv run ruff check .
@@ -5390,7 +5390,7 @@ flowchart LR
 
 ## Ранбук Дня 3. Работа с монолитом в агентной разработке: База знаний, Оркестрация и GSD-волны
 
-> **Сквозной репозиторий дня:** `~/work/MoscowPythonPro/workshop-nov-5` (монолитный backend сервиса сокращения ссылок и биллинга).  
+> **Сквозной репозиторий дня:** `~/work/MoscowPythonPro/workshop` (монолитный backend сервиса сокращения ссылок и биллинга).  
 > **Инженерная цель дня:** Научить агента безопасно ориентироваться и разрабатывать фичи в крупном монолите без деградации контекста, галлюцинаций контрактов и потери архитектурных инвариантов.  
 > **Методологическая основа:** Ключевые столпы монолита — База знаний (по методу Андрея Карпати и концепции LLM OS), конвейер оркестрации ролей (Кодер, CODE_GATE, Панель техлидов, Суммаризатор) и методология Open-GSD с послойными волнами и передачей эстафеты (Structured Handoff).
 
@@ -5511,14 +5511,14 @@ flowchart TB
 
 ### Подготовка стенда Дня 3 (одна команда из ПРЕРЕКВИЗИТЫ.md)
 
-Перед началом занятия подгружаем с сервера актуальное состояние Дня 3 одной командой из `ПРЕРЕКВИЗИТЫ.md`: стягиваем с origin ветку `workshop-nov-5` и переключаемся на неё. Это монолитное приложение `linksvc` с контуром оркестрации и скилами Дня 3.
+Перед началом занятия подгружаем с сервера актуальное состояние Дня 3 одной командой из `ПРЕРЕКВИЗИТЫ.md`: стягиваем с origin ветку `workshop` и переключаемся на неё. Это монолитное приложение `linksvc` с контуром оркестрации и скилами Дня 3.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
-opencode run --auto "Подготовь рабочее окружение Дня 3: стяни с origin ветку workshop-nov-5 (git fetch origin workshop-nov-5), переключись на ветку workshop-nov-5 (git checkout -f workshop-nov-5), создай .env из .env.example при отсутствии, выполни uv sync и запусти pytest. Убедись, что все тесты проходят успешно." < /dev/null
+cd ~/work/MoscowPythonPro/workshop
+opencode run --auto "Подготовь рабочее окружение Дня 3: стяни с origin ветку workshop (git fetch origin workshop), переключись на ветку workshop (git checkout -f workshop), создай .env из .env.example при отсутствии, выполни uv sync и запусти pytest. Убедись, что все тесты проходят успешно." < /dev/null
 ```
 
-**Ожидай:** ветка `workshop-nov-5`; `uv run pytest -ra` завершается итоговой строкой `179 passed` (тестовый контур полностью зелёный).
+**Ожидай:** ветка `workshop`; `uv run pytest -ra` завершается итоговой строкой `179 passed` (тестовый контур полностью зелёный).
 
 **Что здесь важно:**
 1. Ваш локальный `.env` и виртуальное окружение `.venv` сохраняются: они не отслеживаются Git, а `checkout -f` затрагивает только файлы ветки.
@@ -5579,7 +5579,7 @@ opencode run --auto "Подготовь рабочее окружение Дня
 
 #### 1. Физическая файловая структура на диске
 
-- `workshop-nov-5/`
+- `workshop/`
   - `docs/` — база знаний в чистом Markdown, без скриптов.
     - `INDEX.md` — корневой роутер проекта, не более 100 строк.
     - `domains/` — доменные спецификации по 50–120 строк.
@@ -5672,7 +5672,7 @@ opencode run --auto "Подготовь рабочее окружение Дня
 Если вы заходите в новый монолит, где такого скрипта ещё нет, вам не нужно писать его руками. Достаточно передать агенту декларативную спецификацию:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Создай в проекте легковесный инструмент проверки базы знаний tools/verify_kb_sync.py:
 1. Скрипт на чистом Python со стандартной библиотекой (re, sys, pathlib).
 2. Проверяет наличие docs/INDEX.md и лимит не более 100 строк.
@@ -5688,14 +5688,14 @@ opencode run --auto "Создай в проекте легковесный ин�
 
 ### 2.2. Построение базы знаний с нуля: промпты генерации INDEX.md и спецификаций доменов
 
-Нужны две вещи: корневой индекс базы знаний `docs/INDEX.md`, помещающийся в одну страницу окна, и спецификация на каждый домен. Ветка `workshop-nov-5` приносит эталон. Чтобы упражнение было настоящим, агент создаёт базу знаний сам, вы сравниваете результат с эталоном и при необходимости возвращаете эталон блоками ниже.
+Нужны две вещи: корневой индекс базы знаний `docs/INDEX.md`, помещающийся в одну страницу окна, и спецификация на каждый домен. Ветка `workshop` приносит эталон. Чтобы упражнение было настоящим, агент создаёт базу знаний сам, вы сравниваете результат с эталоном и при необходимости возвращаете эталон блоками ниже.
 
 #### Прикладной промпт № 1: инвентаризация структуры проекта и сборка `docs/INDEX.md`
 
 🤖 Агент выступает архитектором: читает только структуру верхнего уровня, выделяет бизнес-домены и строит таблицу «домен, спецификация, папки кода, ключевые инварианты»:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Создай базу знаний нашего проекта docs/INDEX.md на основе структуры app/:
 1. Выдели ключевые функциональные домены (Core, Links, Analytics, Billing).
 2. Собери корневой навигатор docs/INDEX.md (строго <= 100 строк, слои и таблица доменов с путями к коду).
@@ -5717,7 +5717,7 @@ opencode run --auto "Создай базу знаний нашего проек�
 1. Запрет читать тела функций и чужие домены держит окно пустым: индекс строится по именам, результат воспроизводим.
 2. Лимит в 100 строк и «каждый путь существует» превращены в машинную проверку: слово «самопроверка» посылает агента к скрипту, а не к собственному мнению.
 
-Эталонный индекс базы знаний `docs/INDEX.md` (файл присутствует в ветке `workshop-nov-5` как эталонный контракт базы знаний):
+Эталонный индекс базы знаний `docs/INDEX.md` (файл присутствует в ветке `workshop` как эталонный контракт базы знаний):
 
 ```markdown
 # Индекс архитектуры и доменов fastapi-linksvc
@@ -5750,7 +5750,7 @@ opencode run --auto "Создай базу знаний нашего проек�
 🤖 Индекс — оглавление, спецификация — страница книги. Спецификация отвечает на пять вопросов: за что отвечает домен, какие у него интерфейсы и модели, какие правила нерушимы, с кем можно и нельзя общаться, по каким признакам он устарел:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Создай спецификации доменов docs/domains/core.md, links.md, billing.md на основе структуры app/:
 1. Для каждого домена опиши назначение, инварианты, связи и точный раздел Location.
 2. Запусти валидатор python3 tools/verify_kb_sync.py и убедись, что код выхода равен 0.
@@ -5931,7 +5931,7 @@ flowchart LR
 🤖 Промпт выполняет быстрый аудит контракта данных без модификации кодовой базы и без загрузки монолита в память:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Проведи ad-hoc аудит Data Contract списания средств в монолите:
 1. По docs/INDEX.md найди домен, отвечающий за платежи и биллинг.
 2. Открой его карточку docs/domains/billing.md и извлеки контрактные инварианты.
@@ -5991,7 +5991,7 @@ opencode run "Проведи ad-hoc аудит Data Contract списания с
 🤖 Промпт выполняет полный цикл продуктовой задачи: от расширения схемы до подшивки знаний обратно в карточку домена:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Расширь Data Contract списания средств в домене Billing:
 1. Открой docs/domains/billing.md, изучи раздел Location и правила безопасности.
 2. В app/schemas/billing.py добавь в ChargeRequest поле partner_metadata: dict[str, str] = Field(default_factory=dict).
@@ -6046,7 +6046,7 @@ opencode run --auto "Расширь Data Contract списания средст�
 🤖 Разработчик поручает агенту синхронизировать документацию на основе выполненных в кодовой базе изменений:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Ты завершил реализацию фичи в домене Billing. Теперь синхронизируй базу знаний проекта по правилу Filing Back:
 1. Изучи git status и git diff: какие файлы app/schemas/, app/services/, app/api/ были созданы или изменены.
 2. Открой карточку docs/domains/billing.md и актуализируй её:
@@ -6380,7 +6380,7 @@ CODE_GATE выдаёт статус `PASS` и впервые пускает па
 🤖 Агент запускает полный цикл разработки фичи: Кодер реализует логику, CODE_GATE подтверждает чистоту слоёв, а коллегия из трёх моделей выносит объективный вердикт:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Работай по скилу оркестрирования .agents/skills/orchestrate-coder-reviewer-summarizer/SKILL.md, реализуй фичу аудита списаний." < /dev/null
 ```
 
@@ -6518,7 +6518,7 @@ ightarrow$ Волна 4 API). Файлы волн строго не пересе
 🤖 Агент читает базу знаний и разворачивает файлы планирования `.planning/`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Инициализируй контур Open-GSD для домена Billing в .planning/ (STATE.md, REQUIREMENTS.md, ROADMAP.md).
 DoD: python3 tools/plan_checker.py возвращает 0." < /dev/null
 ```
@@ -6528,7 +6528,7 @@ DoD: python3 tools/plan_checker.py возвращает 0." < /dev/null
 🤖 Агент волны 1 работает в чистом окне по файлам дорожной карты и передаёт эстафету следующему слою:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Выполни Волну 1 по Open-GSD (.planning/STATE.md, слой schemas).
 DoD: обнови Structured Handoff в .planning/STATE.md и переключи на волну 2." < /dev/null
 ```
@@ -6538,7 +6538,7 @@ DoD: обнови Structured Handoff в .planning/STATE.md и переключи
 🤖 Проверка контура планирования на отсутствие дрейфа:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run "Проверь дрейф плана через python3 tools/plan_checker.py. При превышении попыток сформируй команды отката. Сам файлы не меняй." < /dev/null
 ```
 
@@ -6557,7 +6557,7 @@ opencode run "Проверь дрейф плана через python3 tools/plan
 #### Прикладной промпт № 9: валидация контура через скил
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Проверь контур планирования через .agents/skills/open-gsd-pipeline/SKILL.md.
 DoD: python3 tools/plan_checker.py возвращает 0." < /dev/null
 ```
@@ -6622,7 +6622,7 @@ DoD: python3 tools/plan_checker.py возвращает 0." < /dev/null
 
 ## Ранбук Итогового занятия. Синтез: От вайб-кодинга к профессиональной AI-разработке
 
-> **Сквозной репозиторий:** `~/work/MoscowPythonPro/workshop-nov-5` (монолитный backend сервиса сокращения ссылок и биллинга).  
+> **Сквозной репозиторий:** `~/work/MoscowPythonPro/workshop` (монолитный backend сервиса сокращения ссылок и биллинга).  
 > **Инженерная цель занятия:** Продемонстрировать и закрепить на живом монолите полный путь трансформации от «дикого вайб-кодинга» к детерминированной промышленной AI-разработке.  
 > **Методологическая основа:** Три кита агентного контура:
 > 1. **01. Скилы, харнесы и машинные гардрейлы** — процедурные контракты вместо пространных промтов, Red-Green TDD, бюджет Blast Radius (≤ 7 файлов) и Zero Mocks.
@@ -6686,29 +6686,29 @@ flowchart LR
 
 ## 0. Подготовка окружения и Preflight (проверка за 10 секунд)
 
-Убеждаемся, что рабочий каталог и репозиторий проекта на месте (если репозиторий ещё не клонирован — скачиваем его), переходим в корень монолита `workshop-nov-5` и проверяем готовность базового контура:
+Убеждаемся, что рабочий каталог и репозиторий проекта на месте (если репозиторий ещё не клонирован — скачиваем его), переходим в корень монолита `workshop` и проверяем готовность базового контура:
 
 **1. Создаём рабочую папку и клонируем репозиторий, если он ещё не был склонирован.**
 
 ```bash
 cd ~ 2>/dev/null || cd "$HOME"
-mkdir -p ~/work && test -d ~/work/MoscowPythonPro || git clone -b workshop-nov-5 https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
+mkdir -p ~/work && test -d ~/work/MoscowPythonPro || git clone -b workshop https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
 ```
 
 **2. Переходим в проект, создаём локальный `.env` и поднимаем базу данных в Docker.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 test -f .env || cp .env.example .env
 docker compose up -d --wait db 2>/dev/null || true
 ```
 
-**3. Скачиваем ветку `workshop-nov-5`, синхронизируем зависимости, миграции и проверяем тесты.**
+**3. Скачиваем ветку `workshop`, синхронизируем зависимости, миграции и проверяем тесты.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
-git fetch origin workshop-nov-5
-git checkout -f workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
+git fetch origin workshop
+git checkout -f workshop
 uv sync
 uv run alembic upgrade head 2>/dev/null || true
 uv run pytest -ra
@@ -6731,7 +6731,7 @@ uv run pytest -ra
 Чтобы смоделировать работу агента без процедурных контрактов (как в обычном диалоговом чате), отключаем скилы утилитой `tools/toggle_skills.py`:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/toggle_skills.py --disable
 ```
 
@@ -6748,7 +6748,7 @@ python3 tools/toggle_skills.py --disable
 Отправляем агенту типичную задачу «как в чате»:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Реализуй эндпоинт экспорта всех ссылок сервиса в файл app/api/v1/endpoints/export_vibe.py и подключи его в app/api/v1/router.py. Напиши тест tests/integration/test_export_vibe.py." < /dev/null
 ```
 
@@ -6764,7 +6764,7 @@ opencode run --auto "Реализуй эндпоинт экспорта всех
 Возвращаем скилы на место, чтобы активировать профессиональный контур разработки:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/toggle_skills.py --enable
 ```
 
@@ -6777,7 +6777,7 @@ python3 tools/toggle_skills.py --enable
 Формулируем ту же бизнес-задачу декларативно с указанием скила:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "По скилу .agents/skills/fastapi-feature/SKILL.md реализуй эндпоинт экспорта в app/api/v1/endpoints/export_pro.py и интеграционный тест." < /dev/null
 ```
 
@@ -6798,14 +6798,14 @@ opencode run --auto "По скилу .agents/skills/fastapi-feature/SKILL.md р�
 Запускаем агента в роли независимого ревьювера для объективного сравнения двух реализаций:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Сравни app/api/v1/endpoints/export_vibe.py и export_pro.py. Зафиксируй различия и риски в docs/reviews/export_comparison.md." < /dev/null
 ```
 
 Смотрим итоговый отчет ревьювера:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat docs/reviews/export_comparison.md
 ```
 
@@ -6898,7 +6898,7 @@ async def export_links_pro(
 Передаем агенту задачу устранения прод-инцидента с жестким ограничением scope:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "По скилу .agents/skills/hotfix/SKILL.md исправь ошибку при экспорте с пустыми параметрами." < /dev/null
 ```
 
@@ -6913,7 +6913,7 @@ opencode run --auto "По скилу .agents/skills/hotfix/SKILL.md исправ
 Передаем задачу на оптимизацию кода с гарантией сохранности существующих контрактов:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "По скилу .agents/skills/safe-refactoring/SKILL.md оптимизируй SQL-фильтрацию в app/repositories/link.py." < /dev/null
 ```
 
@@ -6930,14 +6930,14 @@ opencode run --auto "По скилу .agents/skills/safe-refactoring/SKILL.md о
 **1. Проверяем лимит затронутых файлов: не более семи.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_blast_radius.py
 ```
 
 **2. Проверяем изоляцию слоёв через AST-анализ архитектурных импортов.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_layer_lint.py
 ```
 
@@ -6997,7 +6997,7 @@ flowchart TB
 Запускаем автономный конвейер разработки фичи:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Работай по скилу оркестрирования .agents/skills/orchestrate-coder-reviewer-summarizer/SKILL.md, реализуй фичу фильтрации ссылок по тегам." < /dev/null
 ```
 
@@ -7013,7 +7013,7 @@ opencode run --auto "Работай по скилу оркестрировани
 Коллегию судей уже вызвал единый скил оркестрирования. Теперь проверяем сформированный им пакет доказательств:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_techlead_gate.py
 ```
 
@@ -7073,14 +7073,14 @@ flowchart TB
 Когда агент завершает реализацию фичи в монолите, он обязан **обновить Базу Знаний (Filing Back)**, чтобы следующие агенты знали о новом API:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "По скилу .agents/skills/monolith-knowledge-graph/SKILL.md локализуй домен links и сделай Filing Back: зарегистрируй эндпоинт экспорта в docs/domains/links.md и подтверди сходимость базы знаний." < /dev/null
 ```
 
 Проверяем сходимость базы знаний автоматическим скриптом:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_kb_sync.py
 ```
 
@@ -7095,14 +7095,14 @@ python3 tools/verify_kb_sync.py
 - Задача делится на изолированные послойные **волны (Waves)**.
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Используя скил open-gsd-pipeline, сформируй граф волн для реализации монолитного модуля аудита ссылок в .planning/." < /dev/null
 ```
 
 Проверяем валидность плана:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/plan_checker.py
 ```
 
@@ -7116,14 +7116,14 @@ python3 tools/plan_checker.py
 Агент берёт контекст из `STATE.md`, выполняет свою волну и записывает результат для следующего шага:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 opencode run --auto "Используя скил open-gsd-pipeline, выполни Волну 1 плана в чистом контексте и зафиксируй передачу эстафеты в .planning/STATE.md." < /dev/null
 ```
 
 Смотрим файл передачи эстафеты:
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 cat .planning/STATE.md
 ```
 
@@ -7139,35 +7139,35 @@ cat .planning/STATE.md
 **1. Запускаем полный набор тестов монолита.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 uv run pytest -ra
 ```
 
 **2. Проверяем сходимость Базы Знаний.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_kb_sync.py
 ```
 
 **3. Контролируем Blast Radius.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_blast_radius.py
 ```
 
 **4. Проверяем критерии планирования.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/plan_checker.py
 ```
 
 **5. Запускаем итоговый гейт техлида.**
 
 ```bash
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 python3 tools/verify_techlead_gate.py
 ```
 

@@ -5,7 +5,7 @@ echo "======================================================="
 echo "Инициализация и валидация проекта linksvc"
 echo "======================================================="
 
-cd ~/work/MoscowPythonPro/workshop-nov-5
+cd ~/work/MoscowPythonPro/workshop
 
 echo "1. Синхронизация зависимостей через uv..."
 uv sync

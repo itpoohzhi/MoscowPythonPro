@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" role="img" aria-labelledby="title desc">
-  <title id="title">MOSCOW PYTHON PRO // AI ENGINEERING WORKSHOP — 5 НОЯБРЯ</title>
-  <desc id="desc">Красная звезда MoscowPython, сине-жёлтый змеиный мотив Python и название воркшопа 5 ноября.</desc>
+  <title id="title">MOSCOW PYTHON PRO // AI ENGINEERING WORKSHOP</title>
+  <desc id="desc">Красная звезда MoscowPython, сине-жёлтый змеиный мотив Python и название воркшопа.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0d1726"/>
@@ -39,7 +39,7 @@
   <g font-family="Inter, Arial, sans-serif" fill="#ffffff">
     <text x="338" y="106" font-size="58" font-weight="800" letter-spacing="2">MOSCOW PYTHON PRO</text>
     <rect x="341" y="131" width="865" height="4" rx="2" fill="#ed1c24"/>
-    <text x="340" y="198" font-size="28" font-weight="700" fill="#ffd43b" letter-spacing="2">// AI ENGINEERING WORKSHOP — 5 НОЯБРЯ</text>
+    <text x="340" y="198" font-size="28" font-weight="700" fill="#ffd43b" letter-spacing="2">// AI ENGINEERING WORKSHOP</text>
   </g>
 
   <g transform="translate(1308 46)" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="2">

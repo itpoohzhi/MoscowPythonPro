@@ -29,8 +29,8 @@ def get_modified_modules() -> list[str]:
         filepath = line.strip().split()[-1]
         if prefix and filepath.startswith(prefix):
             filepath = filepath[len(prefix) :]
-        elif filepath.startswith("workshop-nov-5/"):
-            filepath = filepath.removeprefix("workshop-nov-5/")
+        elif filepath.startswith("workshop/"):
+            filepath = filepath.removeprefix("workshop/")
         if filepath.startswith("app/"):
             modules.append(filepath)
     return modules
