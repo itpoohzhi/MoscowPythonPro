@@ -76,7 +76,7 @@ uv run python tools/verify_techlead_gate.py
 
 Теги лежат на истории ветки `workshop`. Перейти к срезу: `git checkout snap-3`
 или `./tools/restore_checkpoint.sh snap-3`.
-Вернуться: `git checkout workshop`. На каждом срезе проходят `uv run pytest -q` и те верификаторы,
+Вернуться: `git checkout main`. На каждом срезе проходят `uv run pytest -q` и те верификаторы,
 которые уже есть на этом срезе.
 
 Приложение во всех срезах одно и то же; растёт набор скилов и обвязки.

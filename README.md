@@ -25,7 +25,7 @@
 ```bash
 git clone https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
 cd ~/work/MoscowPythonPro
-git switch workshop
+git switch main
 cd workshop
 
 uv sync

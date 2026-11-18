@@ -69,4 +69,4 @@ case $SNAPSHOT in
 esac
 
 echo "✅ Срез $SNAPSHOT успешно применен!"
-echo "💡 Для возврата на вершину ветки воркшопа выполните: git checkout workshop"
+echo "💡 Для возврата на вершину ветки воркшопа выполните: git checkout main"
