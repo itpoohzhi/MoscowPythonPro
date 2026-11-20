@@ -212,3 +212,24 @@ def test_code_gate_detects_kb_sync_failure(tmp_path: Path) -> None:
     assert passed is False
     assert "kb_sync" in reason
     assert res["status"] == "FAIL"
+
+
+def test_main_cli_check_and_blast_radius_flags(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """CLI принимает документированные флаги --check и --check-blast-radius."""
+    monkeypatch.setattr(op, "ROOT", tmp_path)
+    panel_dir = tmp_path / ".ai-team" / "panel"
+    panel_dir.mkdir(parents=True)
+    for i in range(1, 4):
+        (panel_dir / f"judge-{i}.json").write_text(
+            json.dumps({"verdict": "ACCEPT", "findings": []}), encoding="utf-8"
+        )
+
+    assert op.main(["--check"]) == op.EXIT_READY
+    assert "VERDICT: READY" in capsys.readouterr().out
+
+    tools_dir = tmp_path / "tools"
+    tools_dir.mkdir()
+    (tools_dir / "verify_blast_radius.py").write_text("import sys; sys.exit(0)", encoding="utf-8")
+    assert op.main(["--check-blast-radius"]) == 0

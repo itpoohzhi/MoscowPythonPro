@@ -2172,11 +2172,11 @@ flowchart LR
 
 ### 0.2. Быстрый старт Дня 2: переключение ветки
 
-Перед началом работы подгружаем полное состояние Дня 2 одной командой из `ПРЕРЕКВИЗИТЫ.md`. Она скачивает с сервера ветку `workshop` и переключает каталог `workshop/` на проект Дня 2 целиком: приложение, все скилы прошлого и текущего дня и оркестрацию, а не только дельту. Ваши `.env` и `.venv` она сохраняет.
+Перед началом работы подгружаем полное состояние Дня 2 одной командой из `ПРЕРЕКВИЗИТЫ.md`. Она скачивает с сервера ветку `main` и переключает каталог `workshop/` на проект Дня 2 целиком: приложение, все скилы прошлого и текущего дня и оркестрацию, а не только дельту. Ваши `.env` и `.venv` она сохраняет.
 
 ```bash
 cd ~/work/MoscowPythonPro/workshop
-git fetch origin && git checkout -f workshop
+git fetch origin && git checkout -f main
 ```
 
 Затем проверьте стенд:
@@ -2713,7 +2713,7 @@ ls -lh specs/LINK-42-enable-link.md
 
 #### Практика: скилы Дня 2 и живая проверка спеки
 
-В ветке `workshop` рядом со скилами Дня 1 лежат скилы оркестрации: `teamlead-gate` (Оркестратор), `teamlead-panel` (Панель техлидов), `feature` и `rework` (Кодер). Сравним самый «лёгкий» скил `small-fix` с полной оркестрацией `teamlead-gate`: они закрывают разные размеры задач.
+В ветке `main` рядом со скилами Дня 1 лежат скилы оркестрации: `teamlead-gate` (Оркестратор), `teamlead-panel` (Панель техлидов), `feature` и `rework` (Кодер). Сравним самый «лёгкий» скил `small-fix` с полной оркестрацией `teamlead-gate`: они закрывают разные размеры задач.
 
 | | `small-fix` | `teamlead-gate` |
 |---|---|---|
@@ -5654,11 +5654,11 @@ flowchart TB
 
 ### Подготовка стенда Дня 3 (одна команда из ПРЕРЕКВИЗИТЫ.md)
 
-Перед началом занятия подгружаем с сервера актуальное состояние Дня 3 одной командой из `ПРЕРЕКВИЗИТЫ.md`: стягиваем с origin ветку `workshop` и переключаемся на неё. Это монолитное приложение `linksvc` с контуром оркестрации и скилами Дня 3.
+Перед началом занятия подгружаем с сервера актуальное состояние Дня 3 одной командой из `ПРЕРЕКВИЗИТЫ.md`: стягиваем с origin ветку `main` и переключаемся на неё. Это монолитное приложение `linksvc` с контуром оркестрации и скилами Дня 3.
 
 ```bash
 cd ~/work/MoscowPythonPro/workshop
-opencode run --auto "Подготовь рабочее окружение Дня 3: стяни с origin ветку workshop (git fetch origin main), переключись на ветку workshop (git checkout -f workshop), создай .env из .env.example при отсутствии, выполни uv sync и запусти pytest. Убедись, что все тесты проходят успешно." < /dev/null
+opencode run --auto "Подготовь рабочее окружение Дня 3: стяни с origin ветку main (git fetch origin main), переключись на ветку main (git checkout -f main), создай .env из .env.example при отсутствии, выполни uv sync --python 3.14 --python-preference only-managed и запусти pytest. Убедись, что все тесты проходят успешно." < /dev/null
 ```
 
 **Ожидай:** ветка `main`; `uv run pytest -ra` завершается итоговой строкой `179 passed` (тестовый контур полностью зелёный).
@@ -6846,13 +6846,13 @@ test -f .env || cp .env.example .env
 docker compose up -d --wait db 2>/dev/null || true
 ```
 
-**3. Скачиваем ветку `workshop`, синхронизируем зависимости, миграции и проверяем тесты.**
+**3. Скачиваем ветку `main`, синхронизируем зависимости, миграции и проверяем тесты.**
 
 ```bash
 cd ~/work/MoscowPythonPro/workshop
 git fetch origin main
-git checkout -f workshop
-uv sync
+git checkout -f main
+uv sync --python 3.14 --python-preference only-managed
 uv run alembic upgrade head 2>/dev/null || true
 uv run pytest -ra
 ```

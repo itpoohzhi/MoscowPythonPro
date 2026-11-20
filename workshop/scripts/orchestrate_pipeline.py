@@ -392,6 +392,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         description="Нейтральный оркестратор Coder → CODE_GATE → Панель техлидов (OpenCode Free Tier) → Summarizer."
     )
     parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Быстрая проверка артефактов и пакета без запуска LLM (режим по умолчанию).",
+    )
+    parser.add_argument(
+        "--check-blast-radius",
+        action="store_true",
+        help="Проверить бюджет Blast Radius через tools/verify_blast_radius.py и выйти с его кодом.",
+    )
+    parser.add_argument(
         "--run-gates", action="store_true", help="Запустить CODE_GATE проекта перед оценкой."
     )
     parser.add_argument(
@@ -427,6 +437,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     cfg = resolve_models(args)
     root = ROOT
+
+    if args.check_blast_radius:
+        blast_tool = root / "tools" / "verify_blast_radius.py"
+        if not blast_tool.is_file():
+            print(f"VERDICT: GATE_FAILURE (missing {blast_tool})")
+            return EXIT_GATE_FAILURE
+        res = subprocess.run([sys.executable, str(blast_tool)], cwd=str(root))
+        return res.returncode
 
     print(f"=== Оркестратор приёмки (Задача: {args.task_id}) ===")
     print(f"Корень проекта: {root}")
