@@ -2974,7 +2974,7 @@ flowchart LR
 
 #### Вид 3: Панель техлидов (скилл `teamlead-panel`)
 - **Целевая функция:** принять решение о допуске изменений на основе объективного пакета доказательств и вывести его консенсусом 3/3, а не мнением одного судьи.
-- **Состав:** три судьи `judge-1`, `judge-2`, `judge-3`: одна модель, независимые свежие процессы `opencode run`, STRICT READ-ONLY (ответ в stdout, файл сохраняет Оркестратор). Режим проверяется механически: до и после каждого судьи Оркестратор снимает отпечаток всего дерева проекта (все файлы, кроме `.ai-team/`, `handoff/`, `.git`, `.venv` и кэшей), и любая запись вне `.ai-team/` и `handoff/` обрывает проход ошибкой `JudgeReadOnlyViolationError` (итог `ESCALATE`).
+- **Состав:** три судьи `judge-1`, `judge-2`, `judge-3`: по умолчанию три разные flash-модели OpenCode Go (`opencode-go/deepseek-v4.1-flash`, `opencode-go/glm-5.3-flash`, `opencode-go/qwen3.8-flash`), независимые свежие процессы `opencode run`, STRICT READ-ONLY (ответ в stdout, файл сохраняет Оркестратор). Режим проверяется механически: до и после каждого судьи Оркестратор снимает отпечаток всего дерева проекта (все файлы, кроме `.ai-team/`, `handoff/`, `.git`, `.venv` и кэшей), и любая запись вне `.ai-team/` и `handoff/` обрывает проход ошибкой `JudgeReadOnlyViolationError` (итог `ESCALATE`).
 - **Входные данные:** спека, риск-план, рубрика, handoff Кодера, свидетельство CODE_GATE, `git diff`.
 - **Что проверяет каждый судья:** все 5 критериев `docs/gate-rubric.md`, независимо от шляпы (шляпа задаёт лишь акцент внимания).
 - **Протокол:** консенсус-дебаты `INIT → R1 → D1 → D2 → D3 → FREEZE → C1 → ACCEPT | REJECT`. Раунд R1 — независимые находки; D1, D2, D3 — обсуждение (позиции `AGREE`, `DISPUTE`, `AMEND`, `WITHDRAW`, `INCONCLUSIVE`); FREEZE — фиксация кандидата вердикта и его sha256; C1 — слепой финал (судья видит только пакет и digest). Всё вместе — 15 вызовов на проход (3 R1 + 9 D + 3 C1).
@@ -4684,7 +4684,7 @@ rm -f .ai-team/verdict.md .ai-team/consensus-proof.json
 
 ### 9.6. Шаг 4: Оркестратор и Панель техлидов
 
-Когда CODE_GATE зелёный, Оркестратор открывает проход Панели. Три судьи (`judge-1`, `judge-2`, `judge-3`) — это три независимых свежих процесса одной модели. Каждый проверяет все 5 критериев `docs/gate-rubric.md`, а шляпа определяет, на что он смотрит в этом раунде:
+Когда CODE_GATE зелёный, Оркестратор открывает проход Панели. Три судьи (`judge-1`, `judge-2`, `judge-3`) — это три независимых свежих процесса разных flash-моделей OpenCode Go (`opencode-go/deepseek-v4.1-flash`, `opencode-go/glm-5.3-flash`, `opencode-go/qwen3.8-flash`). Каждый проверяет все 5 критериев `docs/gate-rubric.md`, а шляпа определяет, на что он смотрит в этом раунде:
 
 - **Скептик:** риски, дыры в контрактах, утечки секретов (CWE-532), граничные случаи.
 - **Реалист:** простота, исполнимость, тесты, сопровождение, спека и риск-план.
@@ -4753,7 +4753,11 @@ cd ~/work/MoscowPythonPro/workshop || exit 2
 set -u
 ROUND="${1:?раунд: r1, d1, d2, d3 или c1}"
 ONLY="${2:-}"
-MODEL="opencode-go/glm-5.3-flash"
+MODELS=(
+  "${OPENCODE_MODEL_JUDGE1:-${OPENCODE_MODEL:-opencode-go/deepseek-v4.1-flash}}"
+  "${OPENCODE_MODEL_JUDGE2:-${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}}"
+  "${OPENCODE_MODEL_JUDGE3:-${OPENCODE_MODEL:-opencode-go/qwen3.8-flash}}"
+)
 PANEL=".ai-team/panel"
 PASS_ID=$(python3 -c "import json; print(json.load(open('$PANEL/manifest.json'))['pass_id'])")
 CYCLE=$(python3 -c "import json; print(json.load(open('$PANEL/manifest.json'))['cycle'])")
@@ -4781,6 +4785,7 @@ for N in 1 2 3; do
   OUT="$PANEL/$ROUND/judge-$N.md"
   if [ -n "$ONLY" ] && [ -f "$OUT" ]; then mv "$OUT" "handoff/judge-$ROUND-$N.attempt1.md"; fi
   HAT="${HATS[$((N-1))]}"
+  MODEL="${MODELS[$((N-1))]}"
   BRIEF="По скилу .agents/skills/teamlead-panel/SKILL.md (шаблон брифа раунда $NAME — раздел 11 файла .agents/skills/teamlead-panel/references/consensus-debate.md) сделай ревью. Ты judge-$N, шляпа $HAT, проход $PASS_ID, задача LINK-42, цикл $CYCLE. Режим STRICT READ-ONLY: файлов не создавай и не меняй, ответ только текстом в stdout. Входы: $INPUTS. $EXTRA Начни ответ с заголовка из пяти строк в формате ключ: значение, каждая на отдельной строке: SEAT: judge-$N, ROUND: $NAME, HAT: $HAT, PROCEDURE_ACCEPTED: $MANIFEST_SHA, ORIGIN: live."
   opencode run -m "$MODEL" --format json "$BRIEF" < /dev/null > "handoff/judge-$ROUND-$N.events.jsonl" 2> "handoff/judge-$ROUND-$N.err" &
 done
@@ -4872,7 +4877,7 @@ head -n 3 .ai-team/verdict.md
 
 **Что здесь важно:**
 1. Вердикт не пересказ модели, а результат проверки файлов скриптом: цепочка хешей связывает паспорт, реестр, `freeze.json` и файлы всех раундов.
-2. Три судьи — это три независимых процесса одной модели. Это независимость контекстов, а не разнообразие моделей: общие слепые пятна остаются, поэтому Панель не заменяет CODE_GATE и человеческое слияние.
+2. Три судьи запускаются отдельными свежими процессами на трёх разных семействах OpenCode Go (`deepseek-v4.1-flash`, `glm-5.3-flash`, `qwen3.8-flash`). Даже с разнообразием моделей Панель не заменяет CODE_GATE и человеческое слияние.
 3. Хеши подтверждают целостность файлов, а не личность модели: поле `ORIGIN` — декларация, а не подпись.
 
 #### Быстрый режим и автоматический цикл
@@ -4894,7 +4899,7 @@ uv run python scripts/orchestrate_pipeline.py --live --dry-run
 uv run python scripts/orchestrate_pipeline.py --live
 ```
 
-Модель роли выбирается в порядке: ролевой CLI-флаг (`--model-judge1..3`) → ролевая переменная (`OPENCODE_MODEL_JUDGE1..3`) → глобальный `--model` → `OPENCODE_MODEL` → `model` из `opencode.json` → встроенный дефолт `opencode-go/glm-5.3-flash`; число циклов ограничивает `--max-cycles N`. Честно: длительность живого прохода не измерена, а при недоступном провайдере скрипт остановится техническим исходом, и тогда вернитесь к эталонному пакету.
+Модель роли выбирается в порядке: ролевой CLI-флаг (`--model-judge1..3`) → ролевая переменная (`OPENCODE_MODEL_JUDGE1..3`) → глобальный `--model` → `OPENCODE_MODEL` → встроенные ролевые дефолты OpenCode Go (`opencode-go/deepseek-v4.1-flash`, `opencode-go/glm-5.3-flash`, `opencode-go/qwen3.8-flash`; базовый `opencode.json` не схлопывает состав судей); число циклов ограничивает `--max-cycles N`. Честно: длительность живого прохода не измерена, а при недоступном провайдере скрипт остановится техническим исходом, и тогда вернитесь к эталонному пакету.
 
 ---
 
@@ -5036,28 +5041,77 @@ EOF_SMOKE_TEST
 
 ---
 
-### 9.12. Декларативная приёмка через скил техлида (teamlead-gate)
+### 9.12. Практика: автономная оркестрация по скилу тимлида (`teamlead-gate`) вместо 4 ручных шагов
 
-Кульминация цикла: запуск приёмки **декларативно через промпт**, без самописных скриптов-заглушек. Мы вызываем OpenCode со скилом `teamlead-gate` (его алиасы: `teamlead`, `techlead`, `techlead-gate`), и агент сам берёт роль Оркестратора:
+В разделах **§9.3–§9.6** вы прошли все 4 узла конвейера **вручную** (запуск Кодера, прогон CODE_GATE, Суммаризатор + `rework`, ручной раннер Панели `run_round.sh`), чтобы увидеть каждый файл и хэш под капотом. В реальной разработке инженер не перекладывает эти 4 шага руками — он запускает **один автономный цикл через скилл тимлида** `.agents/skills/teamlead-gate/SKILL.md`.
+
+| Что делали вручную в §9.3–§9.6 | Что делает скилл `teamlead-gate` сам | Модель по умолчанию (OpenCode Go) |
+|---|---|---|
+| **Шаг 1 (§9.3):** ручной запуск Кодера `prompts/01-coder.md` | Автоматически запускает Кодера в свежем процессе по скиллу `feature` и проверяет `handoff/coder-01.json` | `opencode-go/deepseek-v4.1-flash` |
+| **Шаг 2 (§9.4):** ручной прогон `ruff`, `basedpyright`, `alembic`, `pytest`, `mutate_probe` | Лично прогоняет CODE_GATE и фиксирует `.ai-team/code-gate.json`; красный гейт сразу возвращает Кодеру | Детерминированные скрипты (без LLM) |
+| **Шаг 4 (§9.6):** ручной `bash handoff/run_round.sh` | Созывает 3 независимых Read-Only судей из **3 разных семейств** и проверяет целостность дерева проекта | Judge-1 Скептик: `opencode-go/deepseek-v4.1-flash`<br>Judge-2 Реалист: `opencode-go/glm-5.3-flash`<br>Judge-3 Визионер: `opencode-go/qwen3.8-flash` |
+| **Шаг 3 (§9.5):** ручной `panel-rework-summarizer` + `rework` | При `REJECT` сам собирает `handoff/panel-rework-brief.json` (`RW-001`...) и запускает Кодера по скиллу `rework` (до 5 циклов) | Summarizer: `opencode-go/glm-5.3-flash`<br>Rework Coder: `opencode-go/deepseek-v4.1-flash` |
+
+#### Задание: полная автономная оркестрация задачи `LINK-43` по скиллу `teamlead-gate`
+
+Берём новую спецификацию `specs/LINK-43-tag-filter-ears.md` (фильтрация ссылок по тегам) и готовый промпт-бриф `prompts/04-teamlead-orchestrate.md`. Создаём чистую ветку и передаём управление скиллу тимлида **одной командой**:
 
 ```bash
 cd ~/work/MoscowPythonPro/workshop
-opencode run -m "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" "Работай по скилу оркестрирования .agents/skills/teamlead-gate/SKILL.md, проведи приёмку задачи LINK-42 по 5 критериям качества." < /dev/null
+git checkout -B feature/LINK-43-tag-filter
+mkdir -p .ai-team/panel handoff
+cat prompts/04-teamlead-orchestrate.md
 ```
 
-**Что происходит в терминале (100% декларативно):**
-1. OpenCode активирует `→ Skill "teamlead-gate"`.
-2. Скил работает в режиме приёмки уже сделанной задачи LINK-42: Кодер не запускается, сразу идут CODE_GATE и Панель техлидов.
-3. Оркестратор читает `specs/LINK-42-enable-link.md` и `docs/gate-rubric.md`, лично запускает команды верификации (`ruff check`, `basedpyright`, `alembic check`, `pytest`, `mutate_probe`) и сверяет `git diff --stat` с Blast Radius.
-4. Панель из трёх судей проходит протокол `INIT → R1 → D1 → D2 → D3 → FREEZE → C1` (15 вызовов), проверяя в том числе утечки токенов (CWE-532) и чистоту слоёв.
-5. Оркестратор записывает вердикт в `.ai-team/verdict.md` и выводит итог в чат. Первая строка вердикта: `Вердикт: READY`, `Вердикт: REWORK` или `Вердикт: ESCALATE`.
+Запуск автономного оркестратора по скиллу `teamlead-gate`:
 
-*(Дополнительно для CI/CD)*: в автоматическом пайплайне то же детерминированное ядро выполняет раннер `uv run python scripts/orchestrate_pipeline.py`: `VERDICT: READY` при коде выхода 0, `VERDICT: FAIL (<шаг>)` или `VERDICT: REJECT` при 1, `VERDICT: ESCALATE` при 2.
+```bash
+cd ~/work/MoscowPythonPro/workshop
+opencode run --auto -m "${OPENCODE_MODEL:-opencode-go/deepseek-v4.1-flash}" "Работай по скилу оркестрирования .agents/skills/teamlead-gate/SKILL.md. Выполни полный автономный цикл разработки и приёмки задачи LINK-43 по спеке specs/LINK-43-tag-filter-ears.md: сам запусти Кодера (feature), прогони CODE_GATE, созови Панель техлидов из 3 разных flash-моделей OpenCode Go (opencode-go/deepseek-v4.1-flash, opencode-go/glm-5.3-flash, opencode-go/qwen3.8-flash), при REJECT выполни суммаризацию и цикл rework (до 5 циклов), и зафиксируй итоговый вердикт в .ai-team/verdict.md.
+
+$(cat prompts/04-teamlead-orchestrate.md)" < /dev/null
+```
+
+**Что происходит в терминале (100% декларативно, без ручного переключения между 4 шагами):**
+1. OpenCode активирует `→ Skill "teamlead-gate"` и входит в режим Оркестратора (`SOURCE READ-ONLY`: сам код не пишет).
+2. Оркестратор запускает Кодера в свежем процессе (`feature`, модель `opencode-go/deepseek-v4.1-flash`) по спеке `specs/LINK-43-tag-filter-ears.md` и проверяет `handoff/coder-01.json`.
+3. Оркестратор лично прогоняет CODE_GATE (`ruff check`, `basedpyright`, `alembic`, `pytest`, `verify_kb_sync.py`, `verify_architecture_layers.py`, `verify_blast_radius.py`) и сохраняет `.ai-team/code-gate.json`.
+4. При зелёном CODE_GATE Оркестратор созывает трёх независимых read-only судей разных семейств (`deepseek-v4.1-flash` Скептик, `glm-5.3-flash` Реалист, `qwen3.8-flash` Визионер) и сохраняет их оценки в `.ai-team/panel/judge-{1,2,3}.json`.
+5. Если есть замечания `BLOCKER`/`IMPORTANT`, Оркестратор сам вызывает `panel-rework-summarizer` (`opencode-go/glm-5.3-flash`) → `handoff/panel-rework-brief.json` → Кодер в режиме `rework` (Циклы 2..5) → повторный CODE_GATE и Панель.
+6. Итог фиксируется в `.ai-team/verdict.md` (`Вердикт: READY`, `Вердикт: REWORK` или `Вердикт: ESCALATE`).
+
+#### Проверка результата автономного прогона фактом
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+head -n 5 .ai-team/verdict.md
+ls -la .ai-team/panel/
+uv run python scripts/orchestrate_pipeline.py --check
+git diff main...HEAD --stat
+uv run pytest -ra
+```
+
+**Критерий успешности задания:**
+- `.ai-team/verdict.md` начинается с `Вердикт: READY` (или честный `ESCALATE` при исчерпании лимита/сбое, но не «написанный от руки» вердикт);
+- `uv run python scripts/orchestrate_pipeline.py --check` завершается кодом `0` (`VERDICT: READY`);
+- в `git diff main...HEAD --stat` нет замороженных файлов (`app/main.py`, `app/core/config.py`, `app/core/security.py`, `AGENTS.md`);
+- `uv run pytest -ra` зелёный (код `0`).
+
+#### Вариант Б: режим «только приёмка» (`gate-only`) для уже готовой задачи `LINK-42`
+
+Если код уже написан (например, после ручных шагов §9.3–§9.4), тот же скилл `teamlead-gate` можно вызвать в режиме приёмки без запуска Кодера:
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+opencode run -m "${OPENCODE_MODEL:-opencode-go/deepseek-v4.1-flash}" "Работай по скилу оркестрирования .agents/skills/teamlead-gate/SKILL.md в режиме приёмки (gate-only): проведи приёмку уже готовой задачи LINK-42 по 5 критериям docs/gate-rubric.md (CODE_GATE + Панель из 3 flash-моделей OpenCode Go)." < /dev/null
+```
+
+*(Дополнительно для CI/CD)*: в автоматическом пайплайне детерминированное ядро проверяет раннер `uv run python scripts/orchestrate_pipeline.py --check` (либо `uv run python scripts/orchestrate_pipeline.py --live --dry-run` для просмотра команд запуска всех трёх моделей судей): `VERDICT: READY` при коде выхода `0`, `VERDICT: REWORK` / `VERDICT: GATE_FAILURE` при `1`, `VERDICT: ESCALATE` при `2`.
 
 **💡 Что здесь важно:**
-1. `VERDICT: READY` появляется только когда проверены файлы пакета и коды выхода: это доказательство, а не пересказ агента.
-2. Раннер проверяет и артефакты Панели, и свидетельство CODE_GATE, поэтому он ловит «красивый» вердикт, за которым стоит красный `pytest` или устаревший пакет.
-3. Если Панель в разделе 9.6 была запущена на другой версии спеки, проверка вернёт `GATE: BLOCKED` (`stale`), и Оркестратор остановится с `ESCALATE`.
+1. Вы перестаёте быть «ручным оркестратором» и перекидывать промпты между 4 шагами — эту работу берёт на себя скилл `teamlead-gate`.
+2. `VERDICT: READY` появляется только когда проверены файлы пакета, 3 независимые модели судей и коды выхода: это доказательство на диске, а не пересказ агента.
+3. Раннер `orchestrate_pipeline.py` проверяет и артефакты Панели, и свидетельство CODE_GATE, поэтому ловит «красивый» вердикт, за которым стоит красный `pytest` или устаревший пакет.
 
 ## Глава 10. Три контрастных разбора: Одиночный вайб-агент против контура с Панелью
 
