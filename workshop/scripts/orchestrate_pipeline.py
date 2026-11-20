@@ -13,9 +13,12 @@
 * `--live` — запуск реальных агентов через `opencode run` с изолированными процессами.
   `--dry-run` вместе с `--live` выводит команды без их исполнения.
 
-По умолчанию все судьи используют модель воркшопа из `opencode.json`:
-`opencode-go/glm-5.3-flash`. Для продвинутого multi-model сценария модели
-переопределяются отдельными CLI-флагами или переменными окружения.
+По умолчанию панель техлидов использует три разные flash-модели OpenCode Go
+из независимых семейств: `opencode-go/deepseek-v4.1-flash` (Скептик),
+`opencode-go/glm-5.3-flash` (Реалист) и `opencode-go/qwen3.8-flash` (Визионер).
+Модели переопределяются отдельными CLI-флагами (`--model-judge1..3`),
+переменными окружения (`OPENCODE_MODEL_JUDGE1..3`) или единым override
+(`--model` / `OPENCODE_MODEL`).
 """
 
 from __future__ import annotations
@@ -36,10 +39,10 @@ if hasattr(sys.stdout, "reconfigure") and isinstance(sys.stdout, TextIOWrapper):
 if hasattr(sys.stderr, "reconfigure") and isinstance(sys.stderr, TextIOWrapper):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-# Канонические модели по умолчанию (OpenCode Go)
-DEFAULT_JUDGE1_MODEL = "opencode-go/glm-5.3-flash"
+# Канонические модели по умолчанию (OpenCode Go, 3 независимых семейства)
+DEFAULT_JUDGE1_MODEL = "opencode-go/deepseek-v4.1-flash"
 DEFAULT_JUDGE2_MODEL = "opencode-go/glm-5.3-flash"
-DEFAULT_JUDGE3_MODEL = "opencode-go/glm-5.3-flash"
+DEFAULT_JUDGE3_MODEL = "opencode-go/qwen3.8-flash"
 DEFAULT_CODER_MODEL = "opencode-go/deepseek-v4.1-flash"
 DEFAULT_SUMMARIZER_MODEL = "opencode-go/glm-5.3-flash"
 
@@ -112,22 +115,15 @@ def resolve_models(
     env: Mapping[str, str] | None = None,
     config_path: Path | None = None,
 ) -> JudgeConfig:
-    """Разрешение моделей с приоритетами: CLI флаги -> Переменные окружения -> Конфиг -> Дефолты."""
+    """Разрешение моделей: CLI роли -> ENV роли -> глобальный override (--model/OPENCODE_MODEL) -> ролевые дефолты.
+
+    Базовая модель из `opencode.json` используется для интерактивной сессии OpenCode,
+    но не перетирает разнородный multi-model состав панели по умолчанию.
+    """
     environ = os.environ if env is None else env
-    cfg_file = config_path or (ROOT / "opencode.json")
+    _ = config_path  # зарезервировано для обратной совместимости сигнатуры
 
-    # Чтение модели из opencode.json если есть
-    cfg_default_model: str | None = None
-    if cfg_file.is_file():
-        try:
-            cfg = json.loads(read_utf8(cfg_file))
-            cfg_default_model = cfg.get("model")
-        except Exception:
-            pass
-
-    global_override = (
-        getattr(args, "model", None) or environ.get("OPENCODE_MODEL") or cfg_default_model
-    )
+    global_override = getattr(args, "model", None) or environ.get("OPENCODE_MODEL")
 
     j1 = (
         getattr(args, "model_judge1", None)

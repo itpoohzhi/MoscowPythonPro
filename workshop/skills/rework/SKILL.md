@@ -5,7 +5,7 @@ description: "Кодер, Циклы 2..5: исправляет только т�
 
 # Скил rework: Кодер, Циклы 2..5
 
-Скил для повторных запусков Кодера во внешнем цикле `orchestrate-coder-reviewer-summarizer` / `teamlead-gate`. Первый цикл — скил `.agents/skills/feature/SKILL.md`. Здесь Кодер не проектирует заново, а закрывает конкретные замечания: после REJECT Панели техлидов или после красного CODE_GATE. Запуск: `opencode run -m "${OPENCODE_MODEL:-opencode-go/glm-5.3-flash}" "<brief>" < /dev/null` (семейство `glm-5.3`, свежий процесс, без памяти прошлых циклов).
+Скил для повторных запусков Кодера во внешнем цикле `orchestrate-coder-reviewer-summarizer` / `teamlead-gate`. Первый цикл — скил `.agents/skills/feature/SKILL.md`. Здесь Кодер не проектирует заново, а закрывает конкретные замечания: после REJECT Панели техлидов или после красного CODE_GATE. Запуск: `opencode run -m "${OPENCODE_MODEL_CODER:-${OPENCODE_MODEL:-opencode-go/deepseek-v4.1-flash}}" "<brief>" < /dev/null` (семейство `deepseek-v4.1`, свежий процесс, без памяти прошлых циклов).
 
 Потолок: 5 циклов (по умолчанию в конвейере — 3). При исчерпании лимита Оркестратор выходит в `ESCALATE`.
 

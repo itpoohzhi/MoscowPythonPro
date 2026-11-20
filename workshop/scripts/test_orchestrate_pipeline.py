@@ -25,11 +25,22 @@ def test_no_hardcoded_user_paths_in_source() -> None:
 
 
 def test_resolve_models_defaults_and_overrides(tmp_path: Path) -> None:
-    """Проверка единого дефолта OpenCode Go и ролевых переопределений."""
+    """Проверка разнородного дефолта OpenCode Go (3 семейства) и ролевых переопределений."""
     cfg = op.resolve_models(None, {}, tmp_path / "absent.json")
-    assert cfg.judge1_model == "opencode-go/glm-5.3-flash"
+    assert cfg.judge1_model == "opencode-go/deepseek-v4.1-flash"
     assert cfg.judge2_model == "opencode-go/glm-5.3-flash"
-    assert cfg.judge3_model == "opencode-go/glm-5.3-flash"
+    assert cfg.judge3_model == "opencode-go/qwen3.8-flash"
+    assert cfg.coder_model == "opencode-go/deepseek-v4.1-flash"
+    assert cfg.summarizer_model == "opencode-go/glm-5.3-flash"
+    assert len({cfg.judge1_model, cfg.judge2_model, cfg.judge3_model}) == 3
+
+    # Наличие opencode.json с одной базовой моделью не схлопывает multi-model панель
+    cfg_file = tmp_path / "opencode.json"
+    cfg_file.write_text(json.dumps({"model": "opencode-go/glm-5.3-flash"}), encoding="utf-8")
+    cfg_with_json = op.resolve_models(None, {}, cfg_file)
+    assert cfg_with_json.judge1_model == "opencode-go/deepseek-v4.1-flash"
+    assert cfg_with_json.judge2_model == "opencode-go/glm-5.3-flash"
+    assert cfg_with_json.judge3_model == "opencode-go/qwen3.8-flash"
 
     # Переопределение через env
     env = {
@@ -37,14 +48,14 @@ def test_resolve_models_defaults_and_overrides(tmp_path: Path) -> None:
         "OPENCODE_MODEL_JUDGE2": "opencode-go/glm-5.3-custom",
         "OPENCODE_MODEL_JUDGE3": "opencode-go/qwen-custom",
     }
-    cfg_env = op.resolve_models(None, env, tmp_path / "absent.json")
+    cfg_env = op.resolve_models(None, env, cfg_file)
     assert cfg_env.judge1_model == "opencode-go/deepseek-v4.1-custom"
     assert cfg_env.judge2_model == "opencode-go/glm-5.3-custom"
     assert cfg_env.judge3_model == "opencode-go/qwen-custom"
 
     # Глобальный override через единый флаг/env
     global_env = {"OPENCODE_MODEL": "opencode-go/global-flash"}
-    cfg_global = op.resolve_models(None, global_env, tmp_path / "absent.json")
+    cfg_global = op.resolve_models(None, global_env, cfg_file)
     assert cfg_global.judge1_model == "opencode-go/global-flash"
     assert cfg_global.judge2_model == "opencode-go/global-flash"
     assert cfg_global.judge3_model == "opencode-go/global-flash"
@@ -185,6 +196,9 @@ def test_main_cli_dry_run(
     captured = capsys.readouterr().out
     assert exit_code == op.EXIT_READY
     assert "[DRY-RUN]" in captured
+    assert "opencode-go/deepseek-v4.1-flash" in captured
+    assert "opencode-go/glm-5.3-flash" in captured
+    assert "opencode-go/qwen3.8-flash" in captured
     assert "VERDICT: READY" in captured
 
 

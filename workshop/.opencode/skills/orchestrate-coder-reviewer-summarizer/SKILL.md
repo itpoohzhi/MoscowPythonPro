@@ -20,18 +20,18 @@ description: "Оркестрирует цикл разработки Coder → C
 4. **Нейтральность окружения:** запрещены абсолютные пути конкретной машины (`/Users/...`, `/home/...`) и захардкоженные хеши персонального окружения. Все пути относительны к корню репозитория или используют раскрытие `~/`.
 5. **Предел циклов:** не более 3–5 проходов (по умолчанию 3). При повторении того же блокера дважды — эскалация человеку (`ESCALATE`).
 
-## Роли и модели (OpenCode Go / Configurable Matrix)
+## Роли и модели (OpenCode Go Multi-Model Matrix)
 
-| Роль | Шляпа / Задача | Модель по умолчанию (OpenCode) | Режим доступа |
+| Роль | Шляпа / Задача | Модель по умолчанию (OpenCode Go) | Режим доступа |
 |---|---|---|---|
-| **Coder** | Реализация фичи (Цикл 1) или исправление по брифу (Циклы 2..N) | `opencode-go/glm-5.3-flash` | Чтение и запись кода |
+| **Coder** | Реализация фичи (Цикл 1) или исправление по брифу (Циклы 2..N) | `opencode-go/deepseek-v4.1-flash` | Чтение и запись кода |
 | **CODE_GATE** | 5 ступеней: база знаний, граф AST, слои, Blast Radius, тесты | Детерминированный скрипт проекта | Read-only проверка |
-| **Judge-1** | **Скептик:** риски, дыры в контрактах, граничные условия, утечки | `opencode-go/glm-5.3-flash` | STRICT READ-ONLY |
+| **Judge-1** | **Скептик:** риски, дыры в контрактах, граничные условия, утечки | `opencode-go/deepseek-v4.1-flash` | STRICT READ-ONLY |
 | **Judge-2** | **Реалист:** соответствие спеке EARS, простота, тесты | `opencode-go/glm-5.3-flash` | STRICT READ-ONLY |
-| **Judge-3** | **Визионер:** границы слоёв, чистая архитектура, технический долг | `opencode-go/glm-5.3-flash` | STRICT READ-ONLY |
+| **Judge-3** | **Визионер:** границы слоёв, чистая архитектура, технический долг | `opencode-go/qwen3.8-flash` | STRICT READ-ONLY |
 | **Summarizer** | **panel-rework-summarizer:** сворачивание находок в бриф `RW-001`... | `opencode-go/glm-5.3-flash` | Read-only синтез JSON |
 
-Модели судей настраиваются через переменные окружения `OPENCODE_MODEL_JUDGE1`, `OPENCODE_MODEL_JUDGE2`, `OPENCODE_MODEL_JUDGE3` либо единый фолбэк `OPENCODE_MODEL`.
+Модели ролей переопределяются через переменные окружения `OPENCODE_MODEL_JUDGE1`, `OPENCODE_MODEL_JUDGE2`, `OPENCODE_MODEL_JUDGE3`, `OPENCODE_MODEL_CODER`, `OPENCODE_MODEL_SUMMARIZER` либо единый глобальный override `OPENCODE_MODEL` / `--model`. При временной недоступности одной из моделей OpenCode Go в качестве flash-замен подходят `opencode-go/minimax-m3.1-flash` и `opencode-go/mimo-v2.6-flash`.
 
 ## Машина состояний
 
@@ -104,7 +104,7 @@ python3 tools/verify_techlead_gate.py
 ## Definition of Done (DoD)
 
 - [ ] Все роли запускаются изолированными процессами без сохранения чужих сессий.
-- [ ] Судейская панель использует 3 независимые модели коллегии (по умолчанию `opencode-go/glm-5.3-flash`, `opencode-go/glm-5.3-flash`, `opencode-go/glm-5.3-flash` или через `OPENCODE_MODEL_*`).
+- [ ] Судейская панель использует 3 независимые модели коллегии разных семейств (по умолчанию `opencode-go/deepseek-v4.1-flash`, `opencode-go/glm-5.3-flash`, `opencode-go/qwen3.8-flash` или через `OPENCODE_MODEL_*`).
 - [ ] При отказе суммаризатор создаёт валидный JSON `handoff/panel-rework-brief.json`.
 - [ ] В скриптах и скиле нет персональных путей (`/Users/...`) и жёстко зашитых хешей хоста.
 - [ ] Все пути конечного автомата (READY, REWORK, GATE_FAILURE, ESCALATE) покрыты тестами.

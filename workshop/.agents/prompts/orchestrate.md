@@ -4,7 +4,7 @@
 
 ```text
 Задача: <одна строка>
-Действуй по .agents/skills/orchestrate-coder-reviewer-summarizer.md.
+Действуй по .agents/skills/orchestrate-coder-reviewer-summarizer/SKILL.md.
 Модели ролей — из таблицы в skill. Всё сам. git push / PR не делай.
 final_gate_council=false.
 Summarizer: claim_ledger (каждый bullet → evidence_span в файле).
@@ -14,7 +14,7 @@ Summarizer: claim_ledger (каждый bullet → evidence_span в файле).
 
 ```text
 Задача: <одна строка>
-Действуй по skills/orchestrate-coder-reviewer-summarizer.md.
+Действуй по skills/orchestrate-coder-reviewer-summarizer/SKILL.md.
 Модели ролей — из таблицы в skill. Всё сам. git push / PR не делай.
 final_gate_council=false.
 Summarizer: claim_ledger (каждый bullet → evidence_span в файле).
