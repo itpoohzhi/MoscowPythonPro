@@ -2882,6 +2882,95 @@ uv run alembic upgrade head && uv run alembic check
 
 Код возврата `1` у `alembic check` означает, что модели в Python разошлись с базой: сборка блокируется.
 
+---
+
+### 2.13. Практика A/B: создание фичи БЕЗ SDD против постановки по SDD + сравнение агентом
+
+Прежде чем запускать многоагентную оркестрацию, проверим на живой фиче `linksvc`, что именно даёт **постановка задачи по SDD** на входе: одну и ту же бизнес-задачу сделаем **дважды в двух чистых ветках от `main`** (свободный промпт без SDD против готового SDD-промпта со ссылками на скиллы), а затем отдадим оба `git diff` **независимому агенту-аудитору** для объективного сравнения.
+
+- **Фича эксперимента (`LINK-44`):** продление срока жизни короткой ссылки (`expires_at`, колонка уже есть в `app/models/link.py`, поэтому эксперимент занимает 3–5 минут и не ломает схему БД).
+- **Ветка A (`ab/no-sdd`):** свободный промпт в чат — без SDD, без EARS-спеки на диске.
+- **Ветка B (`ab/with-sdd`):** готовый входной SDD-промпт `prompts/05-sdd-feature-prompt.md` со ссылками на `.agents/skills/spec-kit-ears/SKILL.md`, `.agents/skills/feature/SKILL.md`, `docs/INDEX.md`, `AGENTS.md` и `docs/gate-rubric.md`.
+- **Аудит (Шаг 3):** свежая read-only сессия OpenCode на другой модели (`opencode-go/glm-5.3-flash`) с промптом `prompts/06-compare-sdd-ab.md` сравнивает оба diff по 7 критериям.
+
+#### Шаг 1. Ветка A (`ab/no-sdd`): реализация фичи свободным промптом без SDD
+
+Стартуем от чистого `main`, ставим задачу обычной фразой «как в чате» и сохраняем патч в `handoff/ab-no-sdd.diff`:
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+mkdir -p handoff
+git checkout -B ab/no-sdd main
+opencode run --auto -m "${OPENCODE_MODEL_CODER:-opencode-go/deepseek-v4.1-flash}" \
+  "Добавь в сервис linksvc эндпоинт для продления срока жизни короткой ссылки на заданное количество часов и напиши для него тест." < /dev/null
+git add -N .
+git diff main -- app tests specs > handoff/ab-no-sdd.diff
+git diff main --stat -- app tests specs
+```
+
+**💡 Что здесь важно:** мы не навязываем агенту ошибки — мы даём абсолютно типичный «человеческий» запрос. В нём не зафиксированы URL, поведение для отключённой (`disabled=True`) или уже истёкшей ссылки, верхняя граница часов, `UTC` и Blast Radius.
+
+#### Шаг 2. Ветка B (`ab/with-sdd`): готовый SDD-промпт со ссылками на скиллы
+
+Возвращаемся на чистый `main` (чтобы контекст и правки ветки A никак не влияли на ветку B), смотрим готовый SDD-промпт `prompts/05-sdd-feature-prompt.md` и запускаем ту же модель:
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+git reset --hard main
+git clean -fd -- app tests specs
+git checkout -B ab/with-sdd main
+cat prompts/05-sdd-feature-prompt.md
+```
+
+Запуск реализации по SDD (агент сначала оформляет `specs/LINK-44-extend-ttl-ears.md` по скиллу `spec-kit-ears`, затем реализует по скиллу `feature` с Red-Green TDD и гейтами):
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+opencode run --auto -m "${OPENCODE_MODEL_CODER:-opencode-go/deepseek-v4.1-flash}" "$(cat prompts/05-sdd-feature-prompt.md)" < /dev/null
+git add -N .
+git diff main -- app tests specs > handoff/ab-with-sdd.diff
+cp specs/LINK-44-extend-ttl-ears.md handoff/LINK-44-spec.md 2>/dev/null || true
+git diff main --stat -- app tests specs
+```
+
+*(Опционально — полный контур со скиллом тимлида)*: если хотите прогнать ветку B сразу через автономную Панель техлидов, добавьте в начало промпта: `Работай по скилу оркестрирования .agents/skills/teamlead-gate/SKILL.md.` — тогда Оркестратор сам вызовет Кодера, `CODE_GATE` и 3 разные модели судей.
+
+#### Шаг 3. Сравнение обеих реализаций независимым агентом (STRICT READ-ONLY)
+
+Возвращаемся на чистый `main` (`handoff/` вне git, оба патча сохранены на диске) и запускаем **свежую read-only сессию на другой модели** (`opencode-go/glm-5.3-flash`), чтобы исключить предвзятость автора кода:
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+git reset --hard main
+git clean -fd -- app tests specs
+git checkout main
+opencode run -m "${OPENCODE_MODEL_JUDGE2:-opencode-go/glm-5.3-flash}" \
+  "$(cat prompts/06-compare-sdd-ab.md)" < /dev/null | tee handoff/sdd-ab-comparison.md
+```
+
+**Что обычно находит агент-аудитор при сравнении `ab-no-sdd.diff` vs `ab-with-sdd.diff`:**
+
+| Критерий сравнения | Ветка A (без SDD) | Ветка B (постановка по SDD + скиллы) |
+|---|---|---|
+| **Контракт API и DTO** | Случайный путь/метод, часто сырой `dict` или `hours: int` без лимитов | Точный `POST /api/v1/links/{short_code}/extend-ttl`, `ExtendTtlRequest(ge=1, le=8760)`, `ExtendTtlResponse` |
+| **Граничные случаи (`404` / `409` / `422`)** | Тихо продлевает отключённую (`disabled=True`) ссылку или падает `500 OverflowError` на больших часах | Чёткие EARS-правила: `404` нет ссылки, `409` для `disabled=True`, `422` для `<=0` и `>8760` |
+| **Время (`UTC`) и истёкшие ссылки** | Нередко `datetime.now()` без таймзоны или прибавляет часы к давно истёкшей дате | Строгий `datetime.now(timezone.utc)`; для истёкшей/`None` ссылки отсчёт от `now(UTC)` |
+| **Слои и Blast Radius** | Возможны SQL-запросы в роутере или правки соседних файлов | Строго `schemas -> repositories -> services -> api`, замороженные файлы нетронуты |
+| **Тесты и готовность к Панели** | 1–2 happy-path теста без проверок границ и негативных веток | Red-Green интеграционные тесты на все EARS-пункты, готово к `teamlead-gate` |
+
+#### Шаг 4. Уборка учебных веток перед следующими главами
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+git branch -D ab/no-sdd ab/with-sdd 2>/dev/null || true
+git status --short
+```
+
+**💡 Что здесь важно:**
+1. Модель на ветках A и B **одна и та же** (`opencode-go/deepseek-v4.1-flash`) — вся разница в качестве кода, границ и тестов создаётся исключительно постановкой задачи по SDD (`spec-kit-ears`) и ссылками на скиллы проекта.
+2. Сравнение проводит **другая модель в свежей read-only сессии** (`opencode-go/glm-5.3-flash`) по фактическим `git diff`, а не по самоотчёту автора — это мостик к Главе 3 (разделение ролей и Панель техлидов).
+3. Все артефакты сравнения остаются в `handoff/` (`ab-no-sdd.diff`, `ab-with-sdd.diff`, `LINK-44-spec.md`, `sdd-ab-comparison.md`), а рабочее дерево `main` остаётся чистым для следующих шагов воркшопа.
+
 ## Глава 3. Роли конвейера: разделение обязанностей и прав доступа (Тема 2.3)
 
 ### 3.1. Три вида ответственности и изоляция полномочий
