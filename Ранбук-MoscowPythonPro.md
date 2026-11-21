@@ -1816,7 +1816,7 @@ uv run pytest
 
 > [!NOTE]
 > **Как устроен переключатель `tools/toggle_skills.py`:**
-> При вызове `python3 tools/toggle_skills.py --disable` каталог `.agents/skills` временно перемещается в изолированный кэш `~/.cache/moscowpython-skills-stash`. В Git через команду `git update-index --assume-unchanged` все файлы скилов помечаются неизменными — благодаря этому `git status` остаётся абсолютно чистым и отключение скилов не расходует лимит Blast Radius! При вызове `python3 tools/toggle_skills.py --enable` файлы возвращаются на место, а индекс разблокируется.
+> При вызове `python3 tools/toggle_skills.py --disable` все три каталога скилов (`.agents/skills`, `.opencode/skills`, `skills`) временно перемещаются в изолированный кэш `~/.cache/moscowpython-skills-stash/<хеш-репо>` — OpenCode гарантированно не подхватывает ни одной процедуры. В Git через `git update-index --assume-unchanged` файлы помечаются неизменными, поэтому `git status` остаётся абсолютно чистым и отключение скилов не расходует лимит Blast Radius. При вызове `python3 tools/toggle_skills.py --enable` все три каталога возвращаются на место, а индекс разблокируется.
 
 ---
 
@@ -2006,6 +2006,76 @@ async def export_links_pro(
 | **Тестовое покрытие ветвей** | Упало до 42% (бутафорские тесты) | 100% Branch Coverage эндпоинта |
 | **Код возврата ворот качества** | 1 (падают линтеры и типизация) | 0 (полный зелёный статус) |
 | **Готовность к релизу в прод** | **ОПАСНО ДЛЯ ПРОДАКШЕНА** | **PRODUCTION READY** |
+
+---
+
+### 10.7. Практика A/B на тестах: без скилов vs со скилом `tests-unit` + ревью по скилу `code-review`
+
+Самый быстрый и наглядный показ для зала (3–5 минут): та же модель пишет юнит-тесты для `app/services/link.py` и `app/core/security.py` в **один файл без скилов**, затем — в **один файл со скилом `tests-unit`**, после чего свежая read-only сессия агента проводит **сравнительное ревью обоих файлов по скилу `.agents/skills/code-review/SKILL.md`**.
+
+#### Шаг 1. Убираем все скилы скриптом и убеждаемся, что `git status` чист
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+python3 tools/toggle_skills.py --disable
+python3 tools/toggle_skills.py --status
+git status --short
+```
+
+**Ожидай:** `🔴 Скилы ОТКЛЮЧЕНЫ` (все три каталога `.agents/skills`, `.opencode/skills`, `skills` убраны в кэш) и пустой `git status --short`.
+
+#### Шаг 2. Агент пишет тесты БЕЗ скилов в один файл `tests/unit/test_link_vibe.py`
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+opencode run --auto -m "${OPENCODE_MODEL_CODER:-opencode-go/deepseek-v4.1-flash}" \
+  "Напиши юнит-тесты для app/services/link.py и app/core/security.py в один файл tests/unit/test_link_vibe.py. Код в app/ не меняй." < /dev/null
+uv run pytest tests/unit/test_link_vibe.py -v
+```
+
+**💡 Что здесь важно:** без скила `tests-unit` агент обычно тянет `AsyncMock`/`MagicMock` (тестирует факты вызовов моков вместо реального состояния), пропускает часть SSRF-векторов (`169.254.169.254`, `::1`, `172.16.x.x`, `file://`), забывает строгую типизацию (`from __future__ import annotations`, аннотации `-> None`) и не проверяет покрытие ветвлений `--cov-branch`.
+
+#### Шаг 3. Возвращаем все скилы скриптом
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+python3 tools/toggle_skills.py --enable
+python3 tools/toggle_skills.py --status
+```
+
+**Ожидай:** `🔓 [SKILLS ENABLED]` и `🟢 Скилы АКТИВНЫ (.agents/skills, .opencode/skills, skills; 29 процедур)`.
+
+#### Шаг 4. Та же модель пишет те же тесты СО скилом `tests-unit` в один файл `tests/unit/test_link_pro.py`
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+opencode run --auto -m "${OPENCODE_MODEL_CODER:-opencode-go/deepseek-v4.1-flash}" \
+  "По скилу .agents/skills/tests-unit/SKILL.md напиши модульные тесты для app/services/link.py и app/core/security.py в один файл tests/unit/test_link_pro.py. Код в app/ не меняй." < /dev/null
+uv run pytest tests/unit/test_link_pro.py -v --cov=app.services.link --cov=app.core.security --cov-branch
+```
+
+**💡 Что здесь важно:** скил `tests-unit` обязывает провести инвентаризацию всех `if/else` и всех опасных URL (SSRF), использовать **In-Memory Fake-репозиторий вместо `AsyncMock`**, пройти `ruff` и `basedpyright` и замерить реальное покрытие ветвлений `--cov-branch` за `< 1 с`.
+
+#### Шаг 5. Независимое ревью обоих файлов по скилу `code-review`
+
+Запускаем свежую read-only сессию на другой модели (`opencode-go/glm-5.3-flash`), чтобы она беспристрастно сравнила оба файла строго по чеклисту `.agents/skills/code-review/SKILL.md`:
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+mkdir -p handoff
+opencode run -m "${OPENCODE_MODEL_JUDGE2:-opencode-go/glm-5.3-flash}" \
+  "По скилу .agents/skills/code-review/SKILL.md проведи сравнительное code review двух тестовых файлов: tests/unit/test_link_vibe.py (написан без скилов) и tests/unit/test_link_pro.py (написан со скилом tests-unit). Запусти uv run ruff check, uv run basedpyright и uv run pytest --cov=app.services.link --cov=app.core.security --cov-branch по каждому файлу отдельно. Файлы кода и тестов не меняй. Выведи сравнительную таблицу нарушений (типизация, ruff/basedpyright, AsyncMock vs In-Memory Fake, покрытие ветвлений, граничные случаи SSRF/коллизий) и итоговый вердикт по каждому файлу." < /dev/null | tee handoff/tests-ab-review.md
+```
+
+**💡 Что здесь важно:** отчёт ревьюера строится на фактических выводах `ruff`, `basedpyright` и `--cov-branch` по обоим файлам — в зале сразу видна разница в цифрах и вердикте, а не на словах.
+
+#### Шаг 6. Уборка демонстрационных файлов после показа
+
+```bash
+cd ~/work/MoscowPythonPro/workshop
+rm -f tests/unit/test_link_vibe.py tests/unit/test_link_pro.py
+git status --short
+```
 
 ---
 
