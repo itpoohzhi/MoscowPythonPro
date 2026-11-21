@@ -5,7 +5,7 @@
 ## Вариант A — субмодуль в проекте (`.agents/`)
 
 ```text
-Review <файла или ветки> по .agents/skills/code-review.md.
+Review <файла или ветки> по .agents/skills/code-review/SKILL.md.
 Отчёт в reviews/. Исходники ревью не правь.
 ```
 
@@ -14,6 +14,6 @@ Review <файла или ветки> по .agents/skills/code-review.md.
 ## Вариант B — запуск из ai-sdlc-rules напрямую
 
 ```text
-Review <файла или ветки> по skills/code-review.md.
+Review <файла или ветки> по skills/code-review/SKILL.md.
 Отчёт в reviews/. Исходники ревью не правь.
 ```

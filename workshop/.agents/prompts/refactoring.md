@@ -9,7 +9,7 @@
 ```text
 Jira: <JIRA-KEY>
 Рефакторинг: <что и зачем меняем>
-Ветка refactor/<JIRA-KEY>-<slug>. Действуй по .agents/skills/refactoring.md.
+Ветка refactor/<JIRA-KEY>-<slug>. Действуй по .agents/skills/refactoring/SKILL.md.
 
 DONE: поведение то же; гейт из skill; коммит [agent].
 ```
@@ -21,7 +21,7 @@ DONE: поведение то же; гейт из skill; коммит [agent].
 ```text
 Jira: <JIRA-KEY>
 Рефакторинг: <что и зачем меняем>
-Ветка refactor/<JIRA-KEY>-<slug>. Действуй по skills/refactoring.md.
+Ветка refactor/<JIRA-KEY>-<slug>. Действуй по skills/refactoring/SKILL.md.
 
 DONE: поведение то же; гейт из skill; коммит [agent].
 ```

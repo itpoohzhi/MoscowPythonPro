@@ -143,7 +143,7 @@ ruff: X ошибок | basedpyright: Y ошибок
 ## Пример промпта
 
 ~~~text
-Прочитай файл .skills/code-review.md (он сам ссылается на .agents/agents/python-standards.md, .agents/agents/code.md и .agents/agents/architecture.md).
+Прочитай файл .agents/skills/code-review/SKILL.md (он сам ссылается на .agents/agents/python-standards.md, .agents/agents/code.md и .agents/agents/architecture.md).
 
 Проведи code review файла app/services/bad_link_service.py.
 
@@ -151,6 +151,6 @@ ruff: X ошибок | basedpyright: Y ошибок
 uv run ruff check app/services/bad_link_service.py
 uv run basedpyright app/services/bad_link_service.py
 
-Затем проведи ручную проверку по чеклисту из .skills/code-review.md.
-Сформируй отчёт в формате из .skills/code-review.md.
+Затем проведи ручную проверку по чеклисту из .agents/skills/code-review/SKILL.md.
+Сформируй отчёт в формате из .agents/skills/code-review/SKILL.md.
 ~~~

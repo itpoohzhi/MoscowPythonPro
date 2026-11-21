@@ -247,14 +247,14 @@ boring technology; отклонение от стека команды = ADR-ful
 ## Пример промпта для агента
 
 ```
-Прочитай .agents/agents/architecture.md и .skills/architecture.md.
+Прочитай .agents/agents/architecture.md и .agents/skills/architecture/SKILL.md.
 
 Задача: <JIRA-KEY> — <название>.
 Описание: <текст из Jira>.
 
 Изучи код в <путь к репозиторию>.
 
-Напиши архитектурный документ по алгоритму из .skills/architecture.md:
+Напиши архитектурный документ по алгоритму из .agents/skills/architecture/SKILL.md:
 - C1 и C2 диаграммы в Mermaid
 - Компонентная модель таблицей
 - Решения с альтернативами

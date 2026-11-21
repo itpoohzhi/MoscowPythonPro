@@ -10,12 +10,12 @@
 Jira: <JIRA-KEY>
 Задача: <описание одной строкой>
 
-Прочитай .agents/AGENTS.md, .agents/agents/architecture.md, .agents/skills/architecture.md.
+Прочитай .agents/AGENTS.md, .agents/agents/architecture.md, .agents/skills/architecture/SKILL.md.
 
 Изучи кодовую базу проекта: структуру репозитория, существующие сервисы,
 базовые классы и паттерны, Settings, точки расширения.
 
-Напиши архитектурный документ по алгоритму из .agents/skills/architecture.md —
+Напиши архитектурный документ по алгоритму из .agents/skills/architecture/SKILL.md —
 следуй навыку без дублирования его правил.
 Сохрани в Tasks/<JIRA-KEY>/<JIRA-KEY>-architecture.md.
 Если нашёл противоречие или недостающую информацию — спроси, не додумывай.
@@ -30,12 +30,12 @@ Jira: <JIRA-KEY>
 Задача: <описание одной строкой>
 Проект: <путь к репозиторию или описание>
 
-Прочитай AGENTS.md, agents/architecture.md, skills/architecture.md.
+Прочитай AGENTS.md, .agents/agents/architecture.md, skills/architecture/SKILL.md.
 
 Изучи кодовую базу проекта по указанному пути: структуру, существующие сервисы,
 базовые классы и паттерны, Settings, точки расширения.
 
-Напиши архитектурный документ по алгоритму из skills/architecture.md —
+Напиши архитектурный документ по алгоритму из skills/architecture/SKILL.md —
 следуй навыку без дублирования его правил.
 Сохрани в <путь>/Tasks/<JIRA-KEY>/<JIRA-KEY>-architecture.md.
 Если нашёл противоречие или недостающую информацию — спроси, не додумывай.
