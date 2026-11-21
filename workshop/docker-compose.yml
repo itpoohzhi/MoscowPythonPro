@@ -17,5 +17,24 @@ services:
       timeout: 3s
       retries: 10
 
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    working_dir: /repo/workshop
+    volumes:
+      - ..:/repo
+    environment:
+      DATABASE_URL: postgresql+psycopg://app:app@db:5432/app
+      UV_PROJECT_ENVIRONMENT: /opt/venv
+      UV_NO_SYNC: "1"
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    tty: true
+    stdin_open: true
+
 volumes:
   pgdata:
