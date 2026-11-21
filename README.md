@@ -17,18 +17,34 @@
 
 ## Быстрый старт
 
-Нужны Python 3.14 и [uv](https://docs.astral.sh/uv/).
+### Вариант 1 — локально (Python 3.14 + [uv](https://docs.astral.sh/uv/))
 
 ```bash
-git clone https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
-cd ~/work/MoscowPythonPro
-git switch main
-cd workshop
-
-uv sync
+git clone -b main https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
+cd ~/work/MoscowPythonPro/workshop
+test -f .env || cp .env.example .env && chmod 600 .env
+docker compose up -d db
+uv sync --python 3.14 --python-preference only-managed
+uv run alembic upgrade head
 uv run ruff check .
-uv run pytest -q
+uv run pytest -ra
 uv run python tools/verify_techlead_gate.py
+```
+
+### Вариант 2 — всё готовое в Docker (если `uv` или Python 3.14 не ставится)
+
+Все бинарники (Python 3.14, `uv`, `pytest`, `ruff`, `basedpyright`, `alembic`) живут внутри контейнера `dev` (`/opt/venv`), а исходники монтируются с хоста — **OpenCode запускается локально** и правит те же файлы:
+
+```bash
+git clone -b main https://github.com/itpoohzhi/MoscowPythonPro.git ~/work/MoscowPythonPro
+cd ~/work/MoscowPythonPro/workshop
+test -f .env || cp .env.example .env && chmod 600 .env
+docker compose up -d --build
+docker compose exec dev alembic upgrade head
+docker compose exec dev pytest -ra
+docker compose exec dev ruff check .
+docker compose exec dev basedpyright
+docker compose exec dev python tools/verify_techlead_gate.py
 ```
 
 Подробное описание микросервиса, учебных срезов и инструментов находится в [`workshop/README.md`](./workshop/README.md).
