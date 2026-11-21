@@ -1,6 +1,6 @@
 # Воркшоп MoscowPythonPro. Монолит, масштаб и приёмка
 
-[![MoscowPython](./assets/moscowpython-logo.png)](./assets/moscowpython-logo.svg)
+[![MoscowPython](../assets/moscowpython-logo.png)](../assets/moscowpython-logo.svg)
 
 Каталог `workshop/` на ветке `workshop` и на тегах `snap-0` … `snap-6` — монолит `linksvc`
 воркшопа MoscowPythonPro (проект сообщества MoscowPython) «От вайб-кодинга к профессиональной AI-разработке».
