@@ -9,7 +9,7 @@
 ```text
 Jira: <JIRA-KEY>
 Инцидент: <что упало в проде, как проявляется>
-Ветка hotfix/<JIRA-KEY>-<slug> от main. Действуй по .agents/skills/hotfix.md.
+Ветка hotfix/<JIRA-KEY>-<slug> от main. Действуй по .agents/skills/hotfix/SKILL.md.
 
 DONE: минимальный scope; regression в том же коммите; гейт из skill; коммит [agent].
 ```
@@ -21,7 +21,7 @@ DONE: минимальный scope; regression в том же коммите; г
 ```text
 Jira: <JIRA-KEY>
 Инцидент: <что упало в проде, как проявляется>
-Ветка hotfix/<JIRA-KEY>-<slug> от main. Действуй по skills/hotfix.md.
+Ветка hotfix/<JIRA-KEY>-<slug> от main. Действуй по skills/hotfix/SKILL.md.
 
 DONE: минимальный scope; regression в том же коммите; гейт из skill; коммит [agent].
 ```

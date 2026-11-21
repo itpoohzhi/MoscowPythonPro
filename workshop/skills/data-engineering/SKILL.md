@@ -23,7 +23,7 @@ last_reviewed: 2026-08-09
 - Уточнить, что за компонент: ETL-app / DAG / Kafka-воркер / CH-загрузка / CH→S3.
 - Найти Jira-задачу, создать ветку от dev: имя = ID задачи.
 - Прочитать `.agents/agents/data-engineering.md` и, если задача большая (≥ 1 дня),
-  оформить architecture-документ по `.agents/skills/architecture.md`.
+  оформить architecture-документ по `.agents/skills/architecture/SKILL.md`.
 - Найти эталон рядом (референсный ingest-модуль) и копировать его структуру, не изобретать.
 
 ### 2. Изучение

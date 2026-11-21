@@ -7,7 +7,7 @@
 ```text
 Jira: <JIRA-KEY>
 Задача: <описание фичи>
-Ветка feature/<JIRA-KEY>-<slug>. Действуй по .agents/skills/feature.md.
+Ветка feature/<JIRA-KEY>-<slug>. Действуй по .agents/skills/feature/SKILL.md.
 
 DONE: гейт из skill зелёный; коммит [agent]; дерево чистое. Кратко: diff-суть, тесты, итог гейта.
 ```
@@ -19,7 +19,7 @@ DONE: гейт из skill зелёный; коммит [agent]; дерево ч�
 ```text
 Jira: <JIRA-KEY>
 Задача: <описание фичи>
-Ветка feature/<JIRA-KEY>-<slug>. Действуй по skills/feature.md.
+Ветка feature/<JIRA-KEY>-<slug>. Действуй по skills/feature/SKILL.md.
 
 DONE: гейт из skill зелёный; коммит [agent]; дерево чистое. Кратко: diff-суть, тесты, итог гейта.
 ```

@@ -7,7 +7,7 @@
 ```text
 Jira: <JIRA-KEY>
 Дефект: <одна строка — что ломается и как проявляется>
-Ветка bugfix/<JIRA-KEY>-<slug>. Действуй по .agents/skills/bugfix.md.
+Ветка bugfix/<JIRA-KEY>-<slug>. Действуй по .agents/skills/bugfix/SKILL.md.
 
 DONE: красный→зелёный regression; гейт из skill; коммит [agent]. В ответе: красный тест, diff, итог гейта.
 ```
@@ -19,7 +19,7 @@ DONE: красный→зелёный regression; гейт из skill; комм�
 ```text
 Jira: <JIRA-KEY>
 Дефект: <одна строка — что ломается и как проявляется>
-Ветка bugfix/<JIRA-KEY>-<slug>. Действуй по skills/bugfix.md.
+Ветка bugfix/<JIRA-KEY>-<slug>. Действуй по skills/bugfix/SKILL.md.
 
 DONE: красный→зелёный regression; гейт из skill; коммит [agent]. В ответе: красный тест, diff, итог гейта.
 ```
