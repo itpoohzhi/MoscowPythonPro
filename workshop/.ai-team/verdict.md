@@ -1,11 +1,11 @@
 Вердикт: READY
 
 VERDICT: ACCEPT
-Run: pass_id=LINK-42-c1-aabe18a0
+Run: pass_id=LINK-42-c1-a051930f
 Cycle: 1
 Origin: reference-fixture
 Artifact-SHA256: b755b2afd7ae3c1f6c8d715cab34ea21ede4aa53acc1af3245920afc97f2ec4a
-Consensus-Proof: .ai-team/consensus-proof.json (sha256 83f4fb6b3ed78858a4a6b8af71172c73bcd11b622169bfd55a1fb523131d9ebf)
+Consensus-Proof: .ai-team/consensus-proof.json (sha256 8b3ddb1c189efa2883c2b56b36ac18303ac123f9b9831527baa84f20b5175c44)
 
 ## Обоснование по 5 критериям
 
